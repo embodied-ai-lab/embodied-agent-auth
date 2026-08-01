@@ -77,6 +77,10 @@ slurm/*.sbatch
 submission/*.zip
 submission/answers.md
 
+# The branchless template exporter uses this manifest to remove stale files
+# during later exports. It remains in the student repository but is not committed.
+.student-template-manifest
+
 # Editor / OS noise
 .vscode/
 .idea/
