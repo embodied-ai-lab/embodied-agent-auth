@@ -1,0 +1,17 @@
+.git
+.venv
+runtime
+results/*
+!results/.gitkeep
+ros2_ws/build
+ros2_ws/install
+ros2_ws/log
+__pycache__
+.pytest_cache
+.ruff_cache
+*.sif
+*.gguf
+*.safetensors
+*.db
+*.pem
+*.key

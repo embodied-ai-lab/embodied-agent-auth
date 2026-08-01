@@ -1,0 +1,23 @@
+schema: 1
+auth:
+  id: 101
+  host: 127.0.0.1
+  port: 21900
+
+# Fixed localhost endpoints replace the old ROS endpoint-announcement protocol.
+links:
+  distance:
+    host: 127.0.0.1
+    port: 22101
+    source_entity: net1.distance_sensor
+    target_group: DistanceSensors
+  vision:
+    host: 127.0.0.1
+    port: 22102
+    source_entity: net1.vision_sensor
+    target_group: VisionSensors
+
+entity_configs:
+  agent: runtime/sst/configs/net1.vlm_agent.config
+  distance: runtime/sst/configs/net1.distance_sensor.config
+  vision: runtime/sst/configs/net1.vision_sensor.config

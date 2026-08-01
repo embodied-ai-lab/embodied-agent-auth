@@ -1,0 +1,61 @@
+# Tooling configuration for the ISCPS SST lab.
+#
+# This project is NOT a pip-installable package; the ROS 2 package under
+# ros2_ws/ is built with colcon, and the scripts run in place. This file exists
+# only to configure ruff and pytest for the repository as a whole.
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+# Never lint code we do not own or generate. The vendored SST tree, generated
+# runtime material, and build outputs are all out of scope.
+extend-exclude = [
+    "third_party",
+    "runtime",
+    "results",
+    "ros2_ws/build",
+    "ros2_ws/install",
+    "ros2_ws/log",
+    ".venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+]
+ignore = ["E203"]
+
+[tool.ruff.lint.per-file-ignores]
+# STUDENT TEMPLATE ONLY: these files carry ISCPS-STUDENT-TODO scaffolds, so the
+# imports they pre-provide are unused until you implement the TODOs.
+"ros2_ws/src/iscps_sst_lab/iscps_sst_lab/malicious_distance_sensor_node.py" = ["F401"]
+"ros2_ws/src/iscps_sst_lab/iscps_sst_lab/malicious_vision_node.py" = ["F401"]
+"ros2_ws/src/iscps_sst_lab/iscps_sst_lab/sst_link.py" = ["F401"]
+# Launch files import a sibling module after sys.path manipulation; that E402
+# is intentional and unavoidable in the ROS launch layout.
+"ros2_ws/src/iscps_sst_lab/launch/*.py" = ["E402"]
+# Scripts add package/scripts dirs to sys.path before importing lab modules.
+"scripts/*.py" = ["E402"]
+"sst/scripts/*.py" = ["E402"]
+"tests/*.py" = ["E402"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# The default invocation runs only the offline suite. Marked suites are opt-in.
+addopts = "-m 'not ros_integration and not sst_integration and not live_vlm and not sol_validation'"
+markers = [
+    "ros_integration: needs a ROS 2 Jazzy environment",
+    "sst_integration: needs a running Auth and generated credentials",
+    "live_vlm: needs Ollama with a vision model installed",
+    "sol_validation: must run inside an allocated Sol compute node",
+]

@@ -1,0 +1,13 @@
+schema: 2
+topics:
+  distance: /iscps_sst/distance
+  camera: /iscps_sst/camera/compressed
+  action: /iscps_sst/action
+  outcome: /iscps_sst/outcome
+
+# ROS discovery is intentionally visible but is not an authentication boundary.
+discovery:
+  automatic_discovery_range: LOCALHOST
+  default_domain_id: 42
+  domain_id_min: 1
+  domain_id_max: 101

@@ -1,0 +1,31 @@
+Bootstrap: docker
+From: ros:jazzy
+
+%labels
+    Description "ROS 2 Jazzy and the SST toolchain for the ISCPS embodied-agent-auth project"
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        python3-colcon-common-extensions \
+        python3-pip \
+        python3-venv \
+        openjdk-17-jdk-headless \
+        maven \
+        openssl \
+        nodejs \
+        npm \
+        git \
+        make \
+        curl \
+        ca-certificates
+    rm -rf /var/lib/apt/lists/*
+
+%environment
+    export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+    . /opt/ros/jazzy/setup.sh 2>/dev/null || true
+
+%runscript
+    echo "Bind the repository, run 'make setup' and 'make build', then 'make vlm-check'."
+    echo "Ollama must run on the same allocated compute-node host or a course endpoint."

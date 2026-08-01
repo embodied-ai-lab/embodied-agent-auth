@@ -1,0 +1,84 @@
+# ---------------------------------------------------------------------------
+# Generated runtime material. NEVER commit anything below this line.
+# ---------------------------------------------------------------------------
+
+# All generated credentials, keys, certificates, Auth databases, entity
+# configs, Auth properties, PID files, and run logs live under runtime/.
+runtime/
+
+# Belt-and-braces patterns so a stray secret cannot be committed even if it
+# lands outside runtime/.
+*.pem
+*.der
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.csr
+*.srl
+*.mysql
+*.db
+*.sqlite
+*.sqlite3
+*.mv.db
+*.trace.db
+
+# Run outputs. results/.gitkeep is tracked; nothing else in results/ is.
+results/*
+!results/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ROS 2 / colcon
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+log/
+
+# Java / Maven build output
+target/
+
+# Model weights and caches. Never commit these.
+*.gguf
+*.safetensors
+*.bin
+*.onnx
+*.pt
+*.pth
+models/
+.ollama/
+
+# Container images
+*.sif
+*.simg
+*.tar.gz
+
+# Slurm scripts generated from the instructor .in templates. The templates and
+# the student batch script are tracked.
+slurm/*.sbatch
+!slurm/run_experiments.sbatch
+
+# Submission archives are rebuilt on demand and never committed.
+submission/*.zip
+submission/answers.md
+
+# Editor / OS noise
+.vscode/
+.idea/
+*.swp
+.DS_Store

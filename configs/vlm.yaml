@@ -1,0 +1,10 @@
+# Required live model configuration. Graded commands have no backend selector.
+schema: 2
+model: qwen2.5vl:3b
+endpoint: http://127.0.0.1:11434
+minimum_ollama_version: 0.7.0
+timeout_s: 90
+temperature: 0
+seed: 7
+num_predict: 160
+auto_pull: false

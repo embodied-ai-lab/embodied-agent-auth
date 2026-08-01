@@ -1,0 +1,153 @@
+{
+	"_comment": [
+		"Deployment topology for the ISCPS warehouse-cart crossing project.",
+		"Consumed by the upstream iotauth generators in the temporary",
+		"runtime/iotauth-generation work area.",
+		"",
+		"Design notes:",
+		" * One local Auth (101) on loopback only.",
+		" * Every target group has exactly ONE member. A policy that names",
+		"   'DistanceSensors' therefore binds the distance-sensor role to exactly",
+		"   net1.distance_sensor, which is what makes role impersonation fail.",
+		" * net1.rogue_sensor is deliberately ABSENT. It is a valid ROS 2 node",
+		"   in the attack demonstration, but it is not registered with Auth:",
+		"   no assignment, Registered entity table row, group, keypair, or",
+		"   entity config.",
+		"   It can bind a local TCP port but cannot complete an SST handshake.",
+		" * privilegeList must be present even when empty: the upstream",
+		"   authConfigGenerator.js dereferences graph.privilegeList.length.",
+		" * MaxNumSessionKeyOwners must be >= 2; the Auth SQLite schema enforces",
+		"   a CHECK constraint. Two owners is exactly right here (one agent plus",
+		"   one sensor share each session key)."
+	],
+
+	"authList": [
+		{
+			"id": 101,
+			"entityHost": "localhost",
+			"authHost": "localhost",
+			"tcpPort": 21900,
+			"udpPort": 21902,
+			"authPort": 21901,
+			"callbackPort": 21903,
+			"dbProtectionMethod": 1,
+			"backupEnabled": false,
+			"contextualCallbackEnabled": false
+		}
+	],
+
+	"authTrusts": [],
+
+	"assignments": {
+		"net1.vlm_agent": 101,
+		"net1.distance_sensor": 101,
+		"net1.vision_sensor": 101
+	},
+
+	"entityList": [
+		{
+			"group": "Agents",
+			"name": "net1.vlm_agent",
+			"distProtocol": "TCP",
+			"usePermanentDistKey": false,
+			"distKeyValidityPeriod": "1*hour",
+			"maxSessionKeysPerRequest": 5,
+			"netName": "net1",
+			"credentialPrefix": "Net1.VLMAgent",
+			"distributionCryptoSpec": {
+				"cipher": "AES-128-CBC",
+				"mac": "SHA256"
+			},
+			"sessionCryptoSpec": {
+				"cipher": "AES-128-CBC",
+				"mac": "SHA256"
+			},
+			"backupToAuthIds": [],
+			"targetServerInfoList": [
+				{
+					"name": "net1.distance_sensor",
+					"host": "localhost",
+					"port": 22101,
+					"group": "DistanceSensors"
+				},
+				{
+					"name": "net1.vision_sensor",
+					"host": "localhost",
+					"port": 22102,
+					"group": "VisionSensors"
+				}
+			]
+		},
+		{
+			"group": "DistanceSensors",
+			"name": "net1.distance_sensor",
+			"host": "localhost",
+			"port": 22101,
+			"distProtocol": "TCP",
+			"usePermanentDistKey": false,
+			"distKeyValidityPeriod": "1*hour",
+			"maxSessionKeysPerRequest": 5,
+			"netName": "net1",
+			"credentialPrefix": "Net1.DistanceSensor",
+			"distributionCryptoSpec": {
+				"cipher": "AES-128-CBC",
+				"mac": "SHA256"
+			},
+			"sessionCryptoSpec": {
+				"cipher": "AES-128-CBC",
+				"mac": "SHA256"
+			},
+			"backupToAuthIds": []
+		},
+		{
+			"group": "VisionSensors",
+			"name": "net1.vision_sensor",
+			"host": "localhost",
+			"port": 22102,
+			"distProtocol": "TCP",
+			"usePermanentDistKey": false,
+			"distKeyValidityPeriod": "1*hour",
+			"maxSessionKeysPerRequest": 5,
+			"netName": "net1",
+			"credentialPrefix": "Net1.VisionSensor",
+			"distributionCryptoSpec": {
+				"cipher": "AES-128-CBC",
+				"mac": "SHA256"
+			},
+			"sessionCryptoSpec": {
+				"cipher": "AES-128-CBC",
+				"mac": "SHA256"
+			},
+			"backupToAuthIds": []
+		}
+	],
+
+	"filesharingLists": [],
+
+	"privilegeList": [],
+
+	"commPolicies": [
+		{
+			"RequestingGroup": "Agents",
+			"TargetType": "Group",
+			"Target": "DistanceSensors",
+			"MaxNumSessionKeyOwners": 2,
+			"SessionCryptoSpec": "AES-128-CBC:SHA256",
+			"AbsoluteValidity": "1*day",
+			"RelativeValidity": "2*hour",
+			"Expiration": "Infinity",
+			"IsDelegated": 0
+		},
+		{
+			"RequestingGroup": "Agents",
+			"TargetType": "Group",
+			"Target": "VisionSensors",
+			"MaxNumSessionKeyOwners": 2,
+			"SessionCryptoSpec": "AES-128-CBC:SHA256",
+			"AbsoluteValidity": "1*day",
+			"RelativeValidity": "2*hour",
+			"Expiration": "Infinity",
+			"IsDelegated": 0
+		}
+	]
+}

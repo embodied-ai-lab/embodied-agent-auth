@@ -1,0 +1,37 @@
+{
+  "schema": 2,
+  "dependencies": {
+    "iotauth": {
+      "name": "Secure Swarm Toolkit (SST) / IoTAuth",
+      "repository": "https://github.com/iotauth/iotauth.git",
+      "source": "Git submodule commit recorded by the superproject",
+      "submodule_path": "third_party/iotauth",
+      "license": "BSD-2-Clause",
+      "python_package": {
+        "name": "iotauth",
+        "version": "0.1.0",
+        "source_subdir": "entity/python",
+        "install_command": "python3 -m pip install third_party/iotauth/entity/python"
+      },
+      "components_used": [
+        "entity/python",
+        "auth/auth-server",
+        "examples generation tools (temporary runtime work tree only)"
+      ],
+      "required_public_api": [
+        "IoTAuthContext",
+        "SecureClient",
+        "SecureServer",
+        "SecureChannel"
+      ]
+    }
+  },
+  "compatibility": {
+    "ros_distro": "jazzy",
+    "python": ">=3.10,<3.13",
+    "java": ">=11",
+    "node": ">=18",
+    "ollama": ">=0.7.0",
+    "vlm_model": "qwen2.5vl:3b"
+  }
+}
