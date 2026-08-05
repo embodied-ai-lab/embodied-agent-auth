@@ -1,4 +1,4 @@
-# ISCPS Project: Securing Multimodal Perception for a ROS 2 VLM-Based Embodied Agent
+# Intelligent and Safe CPS (ISCPS) Project Lab: Securing Multimodal Perception for a ROS 2 VLM-Based Embodied Agent
 
 > This template repository is a project for the combined course of
 > [CSE 494](https://catalog.apps.asu.edu/catalog/classes/classlist?keywords=85268&searchType=all&term=2267)
