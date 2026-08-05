@@ -1,4 +1,4 @@
-# ISCPS Project Lab: Securing Multimodal Perception for a ROS 2 VLM-Based Embodied Agent
+# ISCPS Project Lab: Securing Embodied Agent Using Authentication
 
 CSE 494/598 · 4 points (common) + 1 point (CSE 598 extension) ·
 estimated 4-6 hours after setup
