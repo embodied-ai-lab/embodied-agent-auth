@@ -1,4 +1,4 @@
-# ISCPS Project: Securing Multimodal Perception for a ROS 2 VLM-Based Embodied Agent
+# ISCPS Project Lab: Securing Multimodal Perception for a ROS 2 VLM-Based Embodied Agent
 
 CSE 494/598 · 4 points (common) + 1 point (CSE 598 extension) ·
 estimated 4-6 hours after setup
@@ -179,7 +179,7 @@ make secure-attack
 
 For `make secure`, show that both the distance value and the image are
 authenticated and that the live model still receives both. For
-`make secure-attack`, the legitimate distance server is stopped and an
+`make secure-attack`, the legitimate distance server is stopped, and an
 unregistered TCP server binds the expected distance port. It can accept the TCP
 connection, but it cannot complete the SST handshake or establish an
 authenticated channel.
@@ -202,11 +202,11 @@ Report:
 
 ---
 
-## CSE 598 extension - malicious camera source (1 pt)
+## Part 5 - CSE 598 extension - malicious camera source (1 pt)
 
 CSE 494 students may read this section but are not graded on it.
 
-In this scenario the true crossing signal is red and the distance is otherwise
+In this scenario, the true crossing signal is red, and the distance is otherwise
 clear at 6.0 m. Implement the two TODOs in
 `ros2_ws/src/iscps_sst_lab/iscps_sst_lab/malicious_vision_node.py`, which
 replace the legitimate red scene with the green scene.
@@ -257,7 +257,7 @@ credentials, build output, or caches. The submission builder excludes them.
 | Part 3, reported-distance sweep | 0.5 | 3 repetitions at all 7 distances, the complete table, `sweep.png`, and an identified action-change range with variability reported honestly |
 | Part 4, authenticated inputs with SST | 1.5 | Both inputs authenticated in `secure`, complete rejection evidence in `secure-attack`, proof that the rejected input never reached the model, fail-closed behavior, and an accurate statement of SST's guarantees and limits |
 | **Common total** | **4.0** | |
-| CSE 598 extension | 1.0 | Hypothesis, implementation, controlled baseline, 3 ROS-only trials, the SST-protected rejection, and a correct validity limitation |
+| Part 5, CSE 598 extension | 1.0 | Hypothesis, implementation, controlled baseline, 3 ROS-only trials, the SST-protected rejection, and a correct validity limitation |
 
 Partial credit is available for each item. An honest negative result with
 complete evidence is worth more than an unsupported claim.
