@@ -206,27 +206,17 @@ make setup && make doctor && make build && make vlm-check
 See [docs/SETUP.md](docs/SETUP.md) for the Docker alternative. Local timing will
 differ from Sol because inference latency depends on the machine.
 
-## Main commands
+## Command reference
 
-```bash
-make help               # list every target
-make test-offline       # unit tests; these cannot satisfy grading
-make baseline           # legitimate ROS inputs -> live VLM
-make attack             # false-distance replacement -> live VLM
-make attack-sweep       # repeated live trials over several distances
-make secure             # authenticated distance and image -> live VLM
-make secure-attack      # unregistered source fails the SST handshake
-make grad-vision-attack # CSE 598 ROS-only camera replacement
-make grad-vision-secure # CSE 598 unregistered camera rejected
-make evaluate           # summarize the most recent run
-make clean              # remove build output, runtime state, and results
-```
+Use `make help` to list the available targets. On Sol, run project targets that
+use Python, ROS 2, SST, or the VLM as `lab make <target>` after defining `lab`
+in the setup instructions. On a personal Linux machine, omit the `lab` prefix.
 
-ROS 2 uses distributed automatic discovery. In the initial configuration, DDS
-Security and SROS2 are not enabled, so the application does not authenticate a
-publisher before accepting its messages. ROS 2 does provide DDS Security and
-SROS2. This project intentionally studies SST as an application-level
-alternative that also covers the non-ROS sensor link.
+Follow [ASSIGNMENT.md](ASSIGNMENT.md) for the required command order,
+repetitions, and CSE 598 extension. Run `make model-setup` directly on the GPU
+compute node after loading the Ollama module. Do not run `lab make clean` until
+you have created and inspected the submission ZIP because it deletes the
+generated results.
 
 ## Documentation
 
