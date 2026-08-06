@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run every required experiment as one GPU batch job on ASU Sol.
+# Run the common CSE 494/598 experiment commands as one GPU batch job on ASU Sol.
 #
 # Submit this from the repository root after the SIF exists and the model has
 # been staged once with `make model-setup` inside an allocation:
@@ -7,18 +7,26 @@
 #     sbatch slurm/run_experiments.sbatch
 #     squeue -u "$USER"
 #
+# The default runs only the common CSE 494/598 experiments. CSE 598 groups run
+# Part 5 in the same job with:
+#
+#     sbatch --export=ALL,RUN_GRAD_EXTENSION=1 \
+#         slurm/run_experiments.sbatch
+#
+# Part 5 remains in the same final ZIP. No second Canvas upload is required.
+#
 # Change --account if your group uses a different allocation. Results land in
 # results/ and the job log lands in results/slurm-<jobid>.out.
 
 #SBATCH --job-name=embodied-agent-auth
 #SBATCH --account=class_cse494598fall2026
-#SBATCH --partition=htc
+#SBATCH --partition=public
 #SBATCH --qos=public
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
-#SBATCH --gres=gpu:a100.20gb=1
+#SBATCH -G a100.20gb:1
 #SBATCH --time=0-04:00:00
 #SBATCH --output=results/slurm-%j.out
 #SBATCH --error=results/slurm-%j.err
@@ -104,8 +112,8 @@ lab make generate
 lab make secure
 lab make secure-attack
 
-# CSE 598 extension. Set RUN_GRAD_EXTENSION=0 to skip it.
-if [[ "${RUN_GRAD_EXTENSION:-1}" == "1" ]]; then
+# CSE 598 extension. The common CSE 494/598 job skips Part 5 by default.
+if [[ "${RUN_GRAD_EXTENSION:-0}" == "1" ]]; then
   for _ in 1 2 3; do
     lab make grad-vision-attack
   done

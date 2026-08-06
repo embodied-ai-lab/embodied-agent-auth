@@ -77,8 +77,8 @@ The ROS nodes, Auth, and the model all use `127.0.0.1`, so the Ollama server
 must run on the same allocated node as the experiments.
 
 ```bash
-interactive -A class_cse494598fall2026 -p htc -q public -t 240 -c 8 --mem=32G \
-    --gres=gpu:a100.20gb=1
+interactive -A class_cse494598fall2026 -p public -q public -t 240 -c 8 --mem=32G \
+    -G a100.20gb:1
 module load apptainer/1.4.5 ollama/0.30.3
 cd /scratch/$USER/<PRIVATE_REPOSITORY>
 
@@ -155,8 +155,10 @@ export SIF=/scratch/$USER/embodied-agent-auth.sif
 export APPTAINERENV_OLLAMA_HOST="$OLLAMA_HOST"
 export APPTAINERENV_VLM_MODEL="$VLM_MODEL"
 export APPTAINERENV_VLM_TIMEOUT_S="$VLM_TIMEOUT_S"
-export APPTAINERENV_ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
-export APPTAINERENV_ROS_DOMAIN_ID=$((1 + SLURM_JOB_ID % 101))
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+export ROS_DOMAIN_ID=$((1 + SLURM_JOB_ID % 101))
+export APPTAINERENV_ROS_AUTOMATIC_DISCOVERY_RANGE="$ROS_AUTOMATIC_DISCOVERY_RANGE"
+export APPTAINERENV_ROS_DOMAIN_ID="$ROS_DOMAIN_ID"
 lab() { apptainer exec --pwd "$PWD" "$SIF" "$@"; }
 
 test -f "$SIF" || { echo "missing SIF: $SIF" >&2; }
@@ -180,26 +182,38 @@ lab make vlm-check
 ```
 
 > **[PERSISTS]** `.venv` and the ROS workspace survive between sessions. Rerun
-> setup or the build after source changes or `make clean`.
+> setup or the build after source changes or `lab make clean`.
 >
-> **[REPEAT]** Run `make doctor` and `make vlm-check` in every new allocation or
-> after changing the endpoint.
+> **[REPEAT]** Run `lab make doctor` and `lab make vlm-check` in every new
+> allocation or after changing the endpoint.
 
-`make setup` creates `.venv` with `--system-site-packages` using the interpreter
-that can import the installed ROS 2 `rclpy`, then installs pydantic, Pillow,
-PyYAML, pytest, Ruff, and the SST Python API from
+`lab make setup` creates `.venv` with `--system-site-packages` using the
+interpreter that can import the installed ROS 2 `rclpy`, then installs pydantic,
+Pillow, PyYAML, pytest, Ruff, and the SST Python API from
 `third_party/iotauth/entity/python`. There is no separate `.deps` copy.
 
 ### 5. Batch alternative
 
-`slurm/run_experiments.sbatch` runs the whole experiment set as one GPU job. It
+`slurm/run_experiments.sbatch` runs the scenario commands as one GPU job. It
 starts and stops its own Ollama server, refuses login nodes, and never downloads
-a model:
+a model. Complete the ROS graph captures interactively using the procedure in
+[ASSIGNMENT.md](../ASSIGNMENT.md#ros-graph-capture). The default runs only the
+common CSE 494/598 experiments:
 
 ```bash
 sbatch slurm/run_experiments.sbatch
 squeue -u "$USER"
 ```
+
+CSE 598 groups explicitly enable Part 5:
+
+```bash
+sbatch --export=ALL,RUN_GRAD_EXTENSION=1 \
+    slurm/run_experiments.sbatch
+```
+
+The Part 5 results are included in the same final ZIP. No second Canvas upload
+is required.
 
 Results land under `results/` and the job log under `results/slurm-<jobid>.out`.
 Edit `--account` if your group uses a different allocation.
@@ -265,13 +279,19 @@ endpoint. Generate SST runtime state only after the container starts.
 
 ## Cleaning up
 
+On Sol, create and inspect the submission ZIP before cleaning:
+
 ```bash
-make auth-stop                        # stop only the Auth process this project started
-python3 scripts/check_cleanup.py      # no stale PID files; ports 21900, 22101, 22102 free
-python3 scripts/check_ros_cleanup.py  # no ROS nodes left in this domain
-make clean                            # remove build output, runtime state, results, caches
+lab make auth-stop
+lab python3 scripts/check_cleanup.py
+lab python3 scripts/check_ros_cleanup.py
+lab make submission GROUPID=<groupid>
+unzip -l submission/group<groupid>_embodied-agent-auth.zip
+lab make clean
 ```
 
-`make clean` deletes generated results. Build your submission ZIP first.
+`lab make clean` removes build output, runtime state, results, and caches. A
+cleaned results directory cannot be used to rebuild the same submission unless
+the experiments are rerun. Personal Linux users omit the `lab` prefix.
 
 Continue with the graded work in [ASSIGNMENT.md](../ASSIGNMENT.md).

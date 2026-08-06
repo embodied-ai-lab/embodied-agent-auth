@@ -43,39 +43,75 @@ default platform, and a personal Linux machine is an optional alternative. Do
 not run Ollama, VLM inference, ROS nodes, Auth, or the container build on a Sol
 login node.
 
+On Sol, define the `lab` helper from the setup instructions and run the project
+targets below as `lab make <target>`. Personal Linux users omit `lab`. The
+one-time host-side `make model-setup` command is the only exception.
+
 ```bash
-make setup
-make doctor
-make build
-make test-offline
-make vlm-check
+lab make setup
+lab make doctor
+lab make build
+lab make test-offline
+lab make vlm-check
 ```
 
-`make vlm-check` checks endpoint reachability, the Ollama server version, the
+`lab make vlm-check` checks endpoint reachability, the Ollama server version, the
 required model and its vision capability, one image inference, and a structured
 response validated against the response schema. Every graded run needs live VLM
 access. Graded commands never download a model and never fall back to a mock.
-`make baseline-mock` exists only as an offline diagnostic and earns no credit.
+`lab make baseline-mock` exists only as an offline diagnostic and earns no
+credit.
 
 ### Baseline (required, ungraded)
-
-```bash
-make baseline
-make evaluate
-```
 
 The green scene looks clear, but the distance sensor truthfully reports a pallet
 at 0.6 m against a 1.5 m stopping requirement, so the model should choose
 `STOP`. Record the structured response, inference latency, selected action, and
 simulated physical outcome. Every later part is compared against this run.
 
-Capture the legitimate ROS graph now, because Part 1 compares against it. Run
-these in a second shell on the same allocated node while the baseline is
-running, with the same `ROS_DOMAIN_ID` the run printed:
+Each scenario evaluates its completed run automatically. `lab make evaluate`
+is only an optional way to re-evaluate the latest completed run.
+
+### ROS graph capture
+
+Prepare a second shell in the same allocation before starting the baseline. In
+the first GPU allocation shell, record the job ID, node, and domain:
 
 ```bash
-ros2 node list > results/ros_graph_baseline.txt
-ros2 topic info -v /iscps_sst/distance >> results/ros_graph_baseline.txt
+printf 'job=%s domain=%s\n' "$SLURM_JOB_ID" "$ROS_DOMAIN_ID"
+hostname
+```
+
+In a second local terminal, log in to Sol, replace `<jobid>` and `<domainid>`
+with those values, and attach an overlapping job step:
+
+```bash
+ssh <asurite>@sol.asu.edu
+srun --jobid=<jobid> --overlap --nodes=1 --ntasks=1 --pty bash
+hostname
+module load apptainer/1.4.5
+cd /scratch/$USER/<PRIVATE_REPOSITORY>
+export SIF=/scratch/$USER/embodied-agent-auth.sif
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+export ROS_DOMAIN_ID=<domainid>
+export APPTAINERENV_ROS_AUTOMATIC_DISCOVERY_RANGE="$ROS_AUTOMATIC_DISCOVERY_RANGE"
+export APPTAINERENV_ROS_DOMAIN_ID="$ROS_DOMAIN_ID"
+lab() { apptainer exec --pwd "$PWD" "$SIF" "$@"; }
+```
+
+Confirm that `hostname` matches the first shell. Leave this shell ready, start
+the baseline in the first shell, and run the graph commands in the second shell
+before the scenario exits:
+
+```bash
+# First shell
+lab make baseline
+```
+
+```bash
+# Second shell
+lab ros2 node list > results/ros_graph_baseline.txt
+lab ros2 topic info -v /iscps_sst/distance >> results/ros_graph_baseline.txt
 ```
 
 ---
@@ -92,15 +128,15 @@ one in its place. This is a replacement experiment, not a race between two
 simultaneous publishers.
 
 ```bash
-make attack FALSE_DISTANCE=6.0
+lab make attack FALSE_DISTANCE=6.0
 ```
 
-Capture the attack graph the same way, in a second shell while the run is
-active:
+While this run is active, use the attached shell from
+[ROS graph capture](#ros-graph-capture):
 
 ```bash
-ros2 node list > results/ros_graph_attack.txt
-ros2 topic info -v /iscps_sst/distance >> results/ros_graph_attack.txt
+lab ros2 node list > results/ros_graph_attack.txt
+lab ros2 topic info -v /iscps_sst/distance >> results/ros_graph_attack.txt
 ```
 
 Report:
@@ -119,7 +155,7 @@ Report:
 ## Part 2 - Unsafe embodied action (1 pt)
 
 Leave the camera, VLM agent, and cart unchanged. Only the distance source is
-replaced. Use the same `make attack FALSE_DISTANCE=6.0` run from Part 1, or
+replaced. Use the same `lab make attack FALSE_DISTANCE=6.0` run from Part 1, or
 rerun it.
 
 Report:
@@ -144,7 +180,7 @@ is complete.
 ## Part 3 - Reported-distance sweep (0.5 pt)
 
 ```bash
-make attack-sweep REPETITIONS=3
+lab make attack-sweep REPETITIONS=3
 ```
 
 This runs three live trials at each of 0.6, 1.0, 1.5, 2.0, 4.0, 6.0, and 10.0 m
@@ -171,15 +207,15 @@ camera. The malicious source is absent from `sst/configs/warehouse_cart.graph`
 and receives no credentials.
 
 ```bash
-make build-auth
-make generate
-make secure
-make secure-attack
+lab make build-auth
+lab make generate
+lab make secure
+lab make secure-attack
 ```
 
-For `make secure`, show that both the distance value and the image are
+For `lab make secure`, show that both the distance value and the image are
 authenticated and that the live model still receives both. For
-`make secure-attack`, the legitimate distance server is stopped, and an
+`lab make secure-attack`, the legitimate distance server is stopped, and an
 unregistered TCP server binds the expected distance port. It can accept the TCP
 connection, but it cannot complete the SST handshake or establish an
 authenticated channel.
@@ -212,8 +248,8 @@ clear at 6.0 m. Implement the two TODOs in
 replace the legitimate red scene with the green scene.
 
 ```bash
-make grad-vision-attack   # run three times
-make grad-vision-secure
+lab make grad-vision-attack   # run three times
+lab make grad-vision-secure
 ```
 
 Report:
@@ -278,7 +314,7 @@ score there, so do not upload a second ZIP.
 
 ```bash
 cp submission/answers_template.md submission/answers.md   # then fill it in
-python3 scripts/make_submission.py --groupid <your_groupid>
+lab make submission GROUPID=<groupid>
 ```
 
 Inspect the archive before uploading it:
@@ -307,6 +343,10 @@ on GitHub or on Sol does not replace it. Points may be deducted if the submitted
 code does not run, required files are missing, results cannot be reproduced, or
 the code does not match the report.
 
+Only after creating and inspecting the ZIP should you run `lab make clean`.
+Cleaning deletes the generated results, so the same submission cannot be
+rebuilt unless the experiments are rerun.
+
 ## Generative AI policy
 
 You may use generative AI as an assistant for clarifying concepts, debugging,
@@ -319,13 +359,13 @@ may receive reduced credit for the affected parts.
 
 ## Troubleshooting
 
-- `make vlm-check` fails: confirm `OLLAMA_HOST`, an Ollama server at 0.7.0 or
+- `lab make vlm-check` fails: confirm `OLLAMA_HOST`, an Ollama server at 0.7.0 or
   newer, and the exact `qwen2.5vl:3b` tag. Pull a model only with
   `make model-setup` inside a compute allocation.
 - Submodule missing: run `git submodule update --init third_party/iotauth`.
-- Missing SST configs: run `make generate`. All generated credentials live under
-  `runtime/sst/`.
+- Missing SST configs: run `lab make generate`. All generated credentials live
+  under `runtime/sst/`.
 - No cart outcome: inspect the newest `results/*/terminal.log` and
   `vlm_agent.jsonl`.
 - A port is already in use: another run is still active. Stop it with
-  `make auth-stop`, then check with `python3 scripts/check_cleanup.py`.
+  `lab make auth-stop`, then check with `lab python3 scripts/check_cleanup.py`.

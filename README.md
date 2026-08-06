@@ -68,9 +68,11 @@ cd /scratch/$USER
 git clone --recurse-submodules git@github.com:<OWNER>/<PRIVATE_REPOSITORY>.git
 cd <PRIVATE_REPOSITORY>
 git submodule update --init third_party/iotauth
+make help
 ```
 
-That is all the login node is used for.
+Use the login node only for lightweight work such as editing, Git commands,
+`make help`, and Slurm job submission.
 
 ### 2. CPU allocation: build the container image
 
@@ -90,8 +92,8 @@ The model, ROS nodes, and Auth all use `127.0.0.1`, so Ollama must run on the
 same allocated node as the experiments.
 
 ```bash
-interactive -A class_cse494598fall2026 -p htc -q public -t 240 -c 8 --mem=32G \
-    --gres=gpu:a100.20gb=1
+interactive -A class_cse494598fall2026 -p public -q public -t 240 -c 8 --mem=32G \
+    -G a100.20gb:1
 module load apptainer/1.4.5 ollama/0.30.3
 cd /scratch/$USER/<PRIVATE_REPOSITORY>
 
@@ -126,8 +128,10 @@ export SIF=/scratch/$USER/embodied-agent-auth.sif
 export APPTAINERENV_OLLAMA_HOST="$OLLAMA_HOST"
 export APPTAINERENV_VLM_MODEL="$VLM_MODEL"
 export APPTAINERENV_VLM_TIMEOUT_S="$VLM_TIMEOUT_S"
-export APPTAINERENV_ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
-export APPTAINERENV_ROS_DOMAIN_ID=$((1 + SLURM_JOB_ID % 101))
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+export ROS_DOMAIN_ID=$((1 + SLURM_JOB_ID % 101))
+export APPTAINERENV_ROS_AUTOMATIC_DISCOVERY_RANGE="$ROS_AUTOMATIC_DISCOVERY_RANGE"
+export APPTAINERENV_ROS_DOMAIN_ID="$ROS_DOMAIN_ID"
 lab() { apptainer exec --pwd "$PWD" "$SIF" "$@"; }
 
 lab make setup
@@ -137,15 +141,14 @@ lab make test-offline
 lab make vlm-check
 ```
 
-`make setup` creates `.venv` and installs SST directly from
-`third_party/iotauth/entity/python`. `make vlm-check` must pass before any
+`lab make setup` creates `.venv` and installs SST directly from
+`third_party/iotauth/entity/python`. `lab make vlm-check` must pass before any
 graded run.
 
 ### 5. GPU allocation: run the experiments
 
 ```bash
 lab make baseline
-lab make evaluate
 lab make attack FALSE_DISTANCE=6.0
 lab make attack-sweep REPETITIONS=3
 
@@ -159,13 +162,26 @@ lab make grad-vision-attack
 lab make grad-vision-secure
 ```
 
-Capture the ROS graph for Parts 1 and 2 from a second shell on the same node
-while a run is active, using the `ROS_DOMAIN_ID` the run printed:
+Use the tested same-allocation procedure in
+[ROS graph capture](ASSIGNMENT.md#ros-graph-capture) to capture the baseline and
+attack graphs before each scenario exits.
+
+As a batch alternative, the default job runs only the common CSE 494/598
+experiment commands. Complete the ROS graph captures interactively as described
+above.
 
 ```bash
-lab ros2 node list > results/ros_graph_baseline.txt
-lab ros2 topic info -v /iscps_sst/distance >> results/ros_graph_baseline.txt
+sbatch slurm/run_experiments.sbatch
 ```
+
+CSE 598 groups explicitly enable Part 5:
+
+```bash
+sbatch --export=ALL,RUN_GRAD_EXTENSION=1 \
+    slurm/run_experiments.sbatch
+```
+
+Part 5 results go in the same final ZIP. No second Canvas upload is required.
 
 ### 6. Clean up and submit
 
@@ -175,9 +191,13 @@ lab python3 scripts/check_cleanup.py
 
 cp submission/answers_template.md submission/answers.md
 # Fill in submission/answers.md before continuing.
-lab python3 scripts/make_submission.py --groupid <groupid>
+lab make submission GROUPID=<groupid>
 unzip -l submission/group<groupid>_embodied-agent-auth.zip
 ```
+
+Create and inspect the ZIP before running `lab make clean`. Cleaning deletes
+the generated results, so the same submission cannot be rebuilt afterward
+unless the experiments are rerun.
 
 Copy the ZIP to your machine and upload it to Canvas:
 

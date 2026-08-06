@@ -102,7 +102,7 @@ baseline-mock: ## Explicit offline diagnostic; never accepted for grading
 	@$(PY) $(ROOT)/scripts/baseline_mock.py
 
 .PHONY: evaluate
-evaluate: ## Evaluate the most recent experiment
+evaluate: ## Optionally re-evaluate the most recent completed experiment
 	@$(PY) $(ROOT)/scripts/evaluate_run.py
 
 .PHONY: auth-start
