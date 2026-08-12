@@ -77,7 +77,7 @@ Use the login node only for lightweight work such as editing, Git commands,
 ### 2. CPU allocation: build the container image
 
 ```bash
-interactive -A class_cse494598fall2026 -p public -q public -t 60 -c 4 --mem=16G
+interactive -A class_cse494598fall2026 -p public -q class -t 60 -c 4 --mem=16G
 module load apptainer/1.4.5 squashfs-4.6.1-gcc-11.2.0
 cd /scratch/$USER/<PRIVATE_REPOSITORY>
 apptainer build /scratch/$USER/embodied-agent-auth.sif containers/Apptainer.def
@@ -92,7 +92,7 @@ The model, ROS nodes, and Auth all use `127.0.0.1`, so Ollama must run on the
 same allocated node as the experiments.
 
 ```bash
-interactive -A class_cse494598fall2026 -p public -q public -t 240 -c 8 --mem=32G \
+interactive -A class_cse494598fall2026 -p public -q class -t 240 -c 8 --mem=32G \
     -G a100.20gb:1
 module load apptainer/1.4.5 ollama/0.30.3
 cd /scratch/$USER/<PRIVATE_REPOSITORY>
