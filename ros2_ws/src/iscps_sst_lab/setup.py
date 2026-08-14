@@ -15,8 +15,8 @@ setup(
     ],
     install_requires=["setuptools", "Pillow", "pydantic>=2", "PyYAML"],
     zip_safe=True,
-    maintainer="CSE 494/598 Course Staff",
-    maintainer_email="iscps-lab@example.invalid",
+    maintainer="Hokeun Kim",
+    maintainer_email="hokeun@asu.edu",
     description=(
         "ISCPS course project: securing multimodal perception for a ROS 2 VLM "
         "agent with the Secure Swarm Toolkit."

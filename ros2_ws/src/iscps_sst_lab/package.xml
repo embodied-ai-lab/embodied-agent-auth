@@ -8,7 +8,7 @@
     embodied agent with the Secure Swarm Toolkit (SST/IoTAuth).
   </description>
 
-  <maintainer email="iscps-lab@example.invalid">CSE 494/598 Course Staff</maintainer>
+  <maintainer email="hokeun@asu.edu">Hokeun Kim</maintainer>
   <license>BSD-2-Clause</license>
 
   <buildtool_depend>ament_python</buildtool_depend>
