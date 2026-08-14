@@ -1,4 +1,4 @@
-# ISCPS Project: Securing Multimodal Perception for a ROS 2 VLM-Based Embodied Agent
+# Embodied AI Lab: Securing Embodied Agent Using Authentication
 
 ## Group information
 
