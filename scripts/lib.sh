@@ -117,7 +117,7 @@ iscps_source_ros() {
     log "sourced ${candidate}"
   else
     log_warn "ROS 2 environment not found at ${candidate}; ROS nodes will not run."
-    log_warn "Install ROS 2 Jazzy or set ISCPS_ROS_DISTRO. See docs/SETUP.md."
+    log_warn "Install ROS 2 Jazzy or set ISCPS_ROS_DISTRO. See README.md."
     return 1
   fi
 }

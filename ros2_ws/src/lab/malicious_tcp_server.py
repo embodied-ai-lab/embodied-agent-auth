@@ -1,4 +1,4 @@
-"""TCP attack helper for SST-protected scenarios."""
+"""Unauthorized TCP replacement helper for attacks on SST-protected inputs."""
 
 from __future__ import annotations
 

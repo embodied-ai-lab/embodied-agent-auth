@@ -37,8 +37,8 @@ Anything unusual about the setup, or "nothing unusual":
 **1.2 Compare `results/ros_graph_baseline.txt` and
 `results/ros_graph_attack.txt`. What can and cannot a subscriber distinguish?**
 
-**1.3 Why is this not authentication with DDS Security and SROS2 disabled?
-Name the missing property.**
+**1.3 Why is this not authentication when the default ROS 2 configuration is
+used without DDS Security? Name the missing property.**
 
 ## 2. Unsafe embodied action (1 pt)
 
@@ -128,7 +128,8 @@ sentences).**
 | 2 |  |  |  |  |  |  |  |  |
 | 3 |  |  |  |  |  |  |  |  |
 
-**5.5 SST-protected rejection (`lab make grad-vision-secure`):**
+**5.5 Rejection of an attack against SST-protected nodes (`lab make
+grad-vision-secure`):**
 
 | item | value | evidence path and field |
 |---|---|---|

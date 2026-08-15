@@ -9,7 +9,16 @@ def test_flat_ros_package_installs_unified_launch(repo_root):
     assert '["launch/lab.launch.py"]' in setup_text
     assert (package / "launch/lab.launch.py").is_file()
     assert (package / "resource/lab").is_file()
-    assert (package / "agent_core.py").is_file()
+    assert (package / "vlm.py").is_file()
+    assert (package / "validation.py").is_file()
+    for removed in (
+        "agent_core.py",
+        "decision_schema.py",
+        "image_validation.py",
+        "sensor_payloads.py",
+        "vlm_agent_node.py",
+    ):
+        assert not (package / removed).exists()
     assert not (package / "lab").exists()
 
 

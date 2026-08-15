@@ -11,8 +11,8 @@ from sensor_msgs.msg import Range
 from .experiment_log import ExperimentLog
 from .ros_qos import SENSOR_QOS
 from .scenario import LabConfig
-from .sensor_payloads import DistancePayload
 from .sst_link import SecureSourceServer
+from .validation import DistancePayload
 
 
 class DistanceSensorNode(Node):

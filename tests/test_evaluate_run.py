@@ -114,7 +114,7 @@ def test_secure_attack_requires_server_and_client_checks(tmp_path):
     )
 
 
-def test_secure_attack_accepts_complete_sst_attack_checks(tmp_path):
+def test_secure_attack_accepts_complete_protected_input_attack_checks(tmp_path):
     run_dir = create_run(
         tmp_path,
         mode="secure-attack",
@@ -143,11 +143,11 @@ def test_secure_attack_accepts_complete_sst_attack_checks(tmp_path):
         run_dir / "malicious_distance_sensor.jsonl",
         {
             "kind": "node_start",
-            "transport_mode": "sst_attack",
+            "transport_mode": "unregistered_source",
             "registered_with_auth": False,
         },
         {
-            "kind": "sst_attack_status",
+            "kind": "unregistered_source_status",
             "started": True,
             "bound": True,
             "connections": 3,
@@ -161,7 +161,7 @@ def test_secure_attack_accepts_complete_sst_attack_checks(tmp_path):
     assert summary["execution_valid"] is True
     assert summary["expected_action_observed"] is True
     assert summary["accepted"] is True
-    attack_checks = summary["sst_attack_checks"]
+    attack_checks = summary["protected_input_attack_checks"]
     assert attack_checks["attacked_input"] == "distance"
     assert attack_checks["attack_server_status"]["bound"] is True
     assert attack_checks["sst_client_status"]["connection_attempts"] == 3
@@ -180,7 +180,7 @@ def test_secure_attack_accepts_complete_sst_attack_checks(tmp_path):
     }
 
 
-def test_graduate_secure_vision_attack_uses_vision_sst_attack_checks(tmp_path):
+def test_graduate_secure_vision_attack_uses_protected_input_checks(tmp_path):
     run_dir = create_run(
         tmp_path,
         mode="grad-vision-secure",
@@ -207,9 +207,9 @@ def test_graduate_secure_vision_attack_uses_vision_sst_attack_checks(tmp_path):
     )
     write_jsonl(
         run_dir / "malicious_vision_sensor.jsonl",
-        {"kind": "node_start", "transport_mode": "sst_attack"},
+        {"kind": "node_start", "transport_mode": "unregistered_source"},
         {
-            "kind": "sst_attack_status",
+            "kind": "unregistered_source_status",
             "started": True,
             "bound": True,
             "connections": 2,
@@ -220,7 +220,7 @@ def test_graduate_secure_vision_attack_uses_vision_sst_attack_checks(tmp_path):
     )
     summary = evaluate(run_dir)
     assert summary["execution_valid"] is True
-    attack_checks = summary["sst_attack_checks"]
+    attack_checks = summary["protected_input_attack_checks"]
     assert attack_checks["attacked_input"] == "vision"
     assert all(attack_checks["checks"].values())
 

@@ -4,8 +4,7 @@ import time
 
 from conftest import FakeProvider
 from evaluate_run import judge_action
-from lab.agent_core import Observation, SensorSample, VLMAgentCore
-from lab.vlm import VLMError
+from lab.vlm import Observation, SensorSample, VLMAgentCore, VLMError
 
 
 def observation(green_image, **changes):

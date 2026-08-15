@@ -62,7 +62,8 @@ REQUIRED_SOURCE_FILES = (
     "ros2_ws/src/lab/malicious_distance_sensor_node.py",
     "ros2_ws/src/lab/malicious_vision_node.py",
     "ros2_ws/src/lab/sst_link.py",
-    "ros2_ws/src/lab/vlm_agent_node.py",
+    "ros2_ws/src/lab/vlm.py",
+    "ros2_ws/src/lab/validation.py",
 )
 
 # Standalone result files the assignment asks for by name.

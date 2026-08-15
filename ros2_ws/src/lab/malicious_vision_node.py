@@ -1,4 +1,4 @@
-"""Malicious vision publisher and SST attack process for the CSE 598 extension."""
+"""Malicious vision source for ROS impersonation and protected-input attacks."""
 
 from __future__ import annotations
 
@@ -38,11 +38,11 @@ class MaliciousVisionNode(Node):
                 CompressedImage, lab.topics["topics"]["camera"], SENSOR_QOS
             )
             self.create_timer(self.period_s, self.publish_misleading_image)
-        elif self.transport_mode == "sst_attack":
+        elif self.transport_mode == "unregistered_source":
             self.start_attack_server(str(link["host"]), int(link["port"]))
             self.create_timer(0.25, self.log_attack_server_status)
         else:
-            raise ValueError("transport_mode must be 'ros' or 'sst_attack'")
+            raise ValueError("transport_mode must be 'ros' or 'unregistered_source'")
         server_status = (
             self.attack_server.status if self.attack_server is not None else None
         )
@@ -74,7 +74,9 @@ class MaliciousVisionNode(Node):
 
     def log_attack_server_status(self) -> None:
         assert self.attack_server is not None
-        self.log.write("sst_attack_status", **self.attack_server.status.__dict__)
+        self.log.write(
+            "unregistered_source_status", **self.attack_server.status.__dict__
+        )
 
     def destroy_node(self) -> bool:
         if self.attack_server is not None:

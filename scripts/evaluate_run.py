@@ -206,7 +206,7 @@ def write_evaluation(run_dir: Path, outcome: dict[str, Any]) -> None:
     )
 
 
-def check_sst_attack(
+def check_protected_input_attack(
     *,
     run_dir: Path,
     mode: str,
@@ -223,7 +223,7 @@ def check_sst_attack(
     server_events, errors = read_events(run_dir / log_name)
     node_start = last_kind(server_events, "node_start")
     server_status = last_kind(server_events, "sst_rejection_attempt") or last_kind(
-        server_events, "sst_attack_status"
+        server_events, "unregistered_source_status"
     )
     if server_status is None and node_start is not None:
         nested = node_start.get("attack_server_status")
@@ -235,7 +235,8 @@ def check_sst_attack(
 
     checks = {
         "malicious_node_started": bool(
-            node_start and node_start.get("transport_mode") == "sst_attack"
+            node_start
+            and node_start.get("transport_mode") == "unregistered_source"
         ),
         "replacement_bound_endpoint": bool(server_status and server_status.get("bound")),
         "agent_connection_attempted": int(client_status.get("connection_attempts") or 0)
@@ -265,7 +266,9 @@ def check_sst_attack(
     }
     for name, passed in checks.items():
         if not passed:
-            errors.append(f"SST attack check failed: {name}")
+            errors.append(
+                f"attack against SST-protected input check failed: {name}"
+            )
 
     return {
         "attacked_input": attacked_input,
@@ -359,7 +362,7 @@ def evaluate(
 
     attack_checks = None
     if mode in {"secure-attack", "grad-vision-secure"}:
-        attack_checks, check_failures = check_sst_attack(
+        attack_checks, check_failures = check_protected_input_attack(
             run_dir=run_dir,
             mode=mode,
             agent=agent,
@@ -422,7 +425,7 @@ def evaluate(
         "execution_valid": execution_valid,
         "execution_failures": execution_failures,
         "strict_failures": strict_failures,
-        "sst_attack_checks": attack_checks,
+        "protected_input_attack_checks": attack_checks,
         "accepted": accepted,
         "failures": execution_failures + strict_failures,
     }
@@ -439,7 +442,7 @@ def write_summary(run_dir: Path, summary: dict[str, Any]) -> None:
         "evidence",
         "execution_failures",
         "strict_failures",
-        "sst_attack_checks",
+        "protected_input_attack_checks",
         "failures",
     }
     flat = {key: value for key, value in summary.items() if key not in excluded}

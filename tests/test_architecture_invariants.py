@@ -7,9 +7,7 @@ import subprocess
 
 def test_no_deterministic_image_classifier_in_agent_path(repo_root):
     agent_files = [
-        repo_root / "ros2_ws/src/lab/agent_core.py",
         repo_root / "ros2_ws/src/lab/vlm.py",
-        repo_root / "ros2_ws/src/lab/vlm_agent_node.py",
     ]
     text = "\n".join(path.read_text() for path in agent_files)
     forbidden = (
@@ -69,6 +67,11 @@ def test_cart_is_ground_truth_free_and_evaluation_is_offline(repo_root):
     assert "ground_truth_distance_m" not in scenario
     assert "ground_truth_signal" not in scenario
     assert "obstacle_distance_m" in truth
+
+
+def test_obsolete_mock_command_is_removed(repo_root):
+    assert "baseline-mock" not in (repo_root / "Makefile").read_text()
+    assert not (repo_root / "scripts/baseline_mock.py").exists()
 
 
 def test_new_run_dir_initializes_runtime_directory(repo_root, tmp_path):

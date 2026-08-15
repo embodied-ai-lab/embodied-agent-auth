@@ -20,6 +20,41 @@ The cart receives only the VLM action. After ROS stops, a separate evaluator
 uses ground truth to judge the recorded execution. Ground truth never reaches
 the VLM or cart.
 
+## How the lab is structured
+
+The project has one flat ROS package in `ros2_ws/src/lab/` and one launch file.
+`vlm.py` contains the VLM client, decision flow, and ROS agent node;
+`validation.py` contains the shared schemas and input checks. The independent
+ground-truth evaluator stays outside the ROS package in
+`scripts/evaluate_run.py` so it cannot become part of the cart's runtime path.
+The Make targets select one of seven modes: `baseline`, `attack`, `secure`,
+`secure-attack`, `grad-vision-baseline`, `grad-vision-attack`, or
+`grad-vision-secure`. Use the Make targets below instead of invoking the launch
+file directly.
+
+The ROS-only modes use the default ROS 2 configuration, without DDS Security.
+A replacement publisher can copy a node name, topic, message type, QoS, and
+frame ID, but those ROS discovery attributes do not authenticate its source.
+`ROS_DOMAIN_ID` and localhost discovery reduce accidental interference; they
+are not security boundaries.
+
+In protected modes, SST authenticates registered distance and camera sources
+and protects message confidentiality and integrity. An unregistered-source
+attack targeting SST-protected nodes cannot deliver an authenticated sensor
+message. SST does not prove that an authenticated sensor reports physical
+truth or that a VLM action is safe.
+
+The agent fails closed with `STOP` for missing, stale, malformed,
+undecodable, or unauthenticated input, endpoint failure or timeout, and invalid
+model output. It publishes each schema-valid model action unchanged; there is
+no hand-written driving rule between the VLM and cart.
+
+Each run writes a directory under `results/` containing the sensor, VLM, cart,
+terminal, evaluation, and summary evidence. In particular,
+`cart_simulator.jsonl` records only execution, while `evaluation.jsonl` and
+`summary.json` contain the independent post-run outcome. The reported-distance
+sweep additionally creates `trials.csv` and `sweep.png`.
+
 ## Start in a private repository
 
 Create one **private** repository per group from this template, add only your
@@ -38,6 +73,12 @@ Do not publish course work in a public repository.
 Login nodes are only for editing, Git, and Slurm submission. Never run a
 container build, Ollama, model inference, ROS nodes, Auth, or compute-heavy
 `make` targets on `sol-login*`.
+
+The repository, SIF, staged model, `.venv`, and ROS build can persist between
+allocations while their files remain under `/scratch`. The allocation, loaded
+modules, Ollama process, environment variables, and `lab` function must be
+created again in every new allocation. `/scratch` is temporary and not backed
+up, so keep source changes in the group's private repository.
 
 ### 1. Build the container in a CPU allocation
 
@@ -162,12 +203,13 @@ scp <asurite>@sol.asu.edu:/scratch/<asurite>/<PRIVATE_REPOSITORY>/submission/gro
 ## References
 
 - [ASSIGNMENT.md](ASSIGNMENT.md): tasks, evidence, rubric, and graph capture
-- [docs/SETUP.md](docs/SETUP.md): session checklist and local setup
-- [docs/DESIGN.md](docs/DESIGN.md): architecture and result files
 - [SECURITY.md](SECURITY.md): authorized use and threat model
 
-Run `make help` for the command list. Personal Linux users omit the `lab`
-prefix. The ROS package is `lab`, with flat sources in `ros2_ws/src/lab/`.
+Run `make help` for the command list. On Ubuntu 24.04 with ROS 2 Jazzy and
+Python 3.10-3.12, initialize `third_party/iotauth`, source
+`/opt/ros/jazzy/setup.bash`, and run the same Make targets without the `lab`
+prefix. Use a local GPU-backed Ollama server or a course-provided endpoint;
+local inference timing can differ from Sol.
 
 BSD 2-Clause. See [LICENSE](LICENSE) and
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

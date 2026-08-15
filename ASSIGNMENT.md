@@ -95,8 +95,9 @@ Report:
 1. The copied attributes and exact implementation lines.
 2. What differs—and what a subscriber cannot distinguish—between the graph
    captures.
-3. Why copied discovery attributes are not source authentication when DDS
-   Security and SROS2 are disabled. Name the missing property.
+3. Why copied discovery attributes are not source authentication when ROS 2's
+   default configuration is used without DDS Security. Name the missing
+   property.
 
 ## Part 2 - Unsafe embodied action (1 pt)
 
@@ -175,8 +176,9 @@ Report:
 3. The controlled baseline using the same scenario and legitimate camera.
 4. Three ROS-only trials with response, action, latency, cart execution, and
    independent outcome.
-5. One SST-protected trial proving the unregistered camera never authenticates,
-   its image never reaches the model, and the agent stops.
+5. One trial of an attack against SST-protected nodes proving the unregistered
+   camera never authenticates, its image never reaches the model, and the
+   agent stops.
 6. Why SST cannot detect a misleading image from a compromised but correctly
    authenticated camera.
 

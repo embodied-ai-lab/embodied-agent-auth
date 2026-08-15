@@ -18,8 +18,9 @@ service prevention are out of scope.
 
 ## Security claims
 
-With DDS Security and SROS2 disabled, matching ROS node, topic, type, QoS, and
-frame attributes do not authenticate a publisher.
+When the default ROS 2 configuration is used without DDS Security, matching
+ROS node, topic, type, QoS, and frame attributes do not authenticate a
+publisher.
 
 In protected modes, SST:
 

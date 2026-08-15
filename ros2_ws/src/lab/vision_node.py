@@ -10,11 +10,10 @@ from rclpy.node import Node
 from sensor_msgs.msg import CompressedImage
 
 from .experiment_log import ExperimentLog
-from .image_validation import validate_image
 from .ros_qos import SENSOR_QOS
 from .scenario import LabConfig
-from .sensor_payloads import VisionMetadata
 from .sst_link import SecureSourceServer
+from .validation import VisionMetadata, validate_image
 
 
 class VisionNode(Node):

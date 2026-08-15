@@ -28,7 +28,7 @@ setup(
         "console_scripts": [
             f"distance_sensor_node = {PACKAGE_NAME}.distance_sensor_node:main",
             f"vision_node = {PACKAGE_NAME}.vision_node:main",
-            f"vlm_agent_node = {PACKAGE_NAME}.vlm_agent_node:main",
+            f"vlm_agent_node = {PACKAGE_NAME}.vlm:main",
             f"cart_simulator_node = {PACKAGE_NAME}.cart_simulator_node:main",
             (
                 "malicious_distance_sensor_node = "

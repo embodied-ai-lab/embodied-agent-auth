@@ -76,7 +76,7 @@ def _launch_mode(context: LaunchContext) -> list[Node]:
         sensors = [
             _node(
                 "malicious_distance_sensor_node",
-                transport_mode="sst_attack",
+                transport_mode="unregistered_source",
                 false_distance_m=false_distance,
             ),
             _node(
@@ -121,7 +121,7 @@ def _launch_mode(context: LaunchContext) -> list[Node]:
                 transport_mode=transport,
                 reported_distance_m=6.0,
             ),
-            _node("malicious_vision_node", transport_mode="sst_attack"),
+            _node("malicious_vision_node", transport_mode="unregistered_source"),
         ]
     else:
         raise ValueError(f"unsupported mode: {mode}")

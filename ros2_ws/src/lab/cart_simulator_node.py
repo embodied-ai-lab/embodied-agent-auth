@@ -7,10 +7,10 @@ from pydantic import ValidationError
 from rclpy.node import Node
 from std_msgs.msg import String
 
-from .decision_schema import PublishedAction
 from .experiment_log import ExperimentLog
 from .ros_qos import RESULT_QOS
 from .scenario import load_yaml
+from .validation import PublishedAction
 
 
 class CartSimulatorNode(Node):

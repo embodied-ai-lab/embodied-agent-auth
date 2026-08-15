@@ -14,7 +14,7 @@ if str(SOURCE_ROOT) not in sys.path:
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from lab.decision_schema import VLMDecision  # noqa: E402
+from lab.validation import VLMDecision  # noqa: E402
 from lab.vlm import VLMCall  # noqa: E402
 
 
