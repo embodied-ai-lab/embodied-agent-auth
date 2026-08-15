@@ -7,9 +7,15 @@ import argparse
 import json
 import socket
 import sys
+from pathlib import Path
 
-from iscps_sst_lab.scenario import LabConfig
-from iscps_sst_lab.vlm import OllamaVLMClient, VLMError
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE_ROOT = ROOT / "ros2_ws" / "src"
+if str(SOURCE_ROOT) not in sys.path:
+    sys.path.insert(0, str(SOURCE_ROOT))
+
+from lab.scenario import LabConfig
+from lab.vlm import OllamaVLMClient, VLMError
 
 
 def on_login_node() -> bool:

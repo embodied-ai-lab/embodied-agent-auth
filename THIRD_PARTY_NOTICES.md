@@ -3,10 +3,9 @@
 ## Secure Swarm Toolkit / IoTAuth
 
 The pinned source is the Git submodule at `third_party/iotauth`, licensed under
-BSD-2-Clause. The lab installs its Python entity API directly from
-`third_party/iotauth/entity/python` and builds Auth from
-`third_party/iotauth/auth`. Generated runtime material is not part of the
-submodule.
+BSD-2-Clause. The lab installs its Python entity API from
+`third_party/iotauth/entity/python` and builds Auth from the submodule.
+Generated runtime material is not part of the submodule.
 
 Project: <https://github.com/iotauth/iotauth>
 

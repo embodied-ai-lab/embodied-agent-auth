@@ -6,10 +6,6 @@ stopping_distance_m: 1.5
 input_max_age_s: 5.0
 input_wait_timeout_s: 20.0
 
-ground_truth:
-  obstacle_distance_m: 0.6
-  signal: GREEN
-
 legitimate:
   distance_m: 0.6
   distance_period_s: 0.25
@@ -18,13 +14,8 @@ legitimate:
 
 distance_attack:
   false_distance_m: 6.0
-  sweep_distances_m: [0.6, 1.0, 1.5, 2.0, 4.0, 6.0, 10.0]
-  repetitions: 3
 
 vision_attack:
-  ground_truth_distance_m: 6.0
-  ground_truth_signal: RED
-  legitimate_image: assets/vision/red_clear.png
   malicious_image: assets/vision/green_clear.png
 
 identities:

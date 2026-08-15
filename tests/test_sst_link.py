@@ -5,8 +5,8 @@ import json
 import socket
 
 import pytest
-from iscps_sst_lab.malicious_tcp_server import MaliciousTcpServer
-from iscps_sst_lab.sst_link import (
+from lab.malicious_tcp_server import MaliciousTcpServer
+from lab.sst_link import (
     MAX_PROTECTED_PAYLOAD_BYTES,
     SSTPayloadError,
     decode_envelope,

@@ -6,7 +6,6 @@ PY ?= $(if $(wildcard $(ROOT)/.venv/bin/python3),$(ROOT)/.venv/bin/python3,pytho
 FALSE_DISTANCE ?= 6.0
 REPETITIONS ?= 3
 GROUPID ?=
-OUTPUT ?= ../embodied-agent-auth
 
 export ISCPS_LAB_ROOT := $(ROOT)
 
@@ -43,7 +42,7 @@ generate: ## Generate all SST state under runtime/ (never in the submodule)
 
 .PHONY: test-offline
 test-offline: ## Run model-free unit tests; these cannot satisfy grading
-	@$(PY) -m pytest -q -m "not ros_integration and not sst_integration and not live_vlm and not sol_validation"
+	@$(PY) -m pytest -q -m "not ros_integration and not sst_integration and not live_vlm"
 
 .PHONY: test
 test: test-offline ## Alias for test-offline
@@ -93,16 +92,16 @@ secure-attack: ## Reject unregistered distance source; do not pass it to the VLM
 grad-vision-attack: ## CSE 598: replace the red camera scene with green over ROS
 	@$(ROOT)/scripts/run_scenario.sh grad-vision-attack
 
+.PHONY: grad-vision-baseline
+grad-vision-baseline: ## CSE 598: legitimate red camera control (expect STOP)
+	@$(ROOT)/scripts/run_scenario.sh grad-vision-baseline
+
 .PHONY: grad-vision-secure
 grad-vision-secure: ## CSE 598: reject the unregistered camera over SST
 	@$(ROOT)/scripts/run_scenario.sh grad-vision-secure
 
-.PHONY: baseline-mock
-baseline-mock: ## Explicit offline diagnostic; never accepted for grading
-	@$(PY) $(ROOT)/scripts/baseline_mock.py
-
 .PHONY: evaluate
-evaluate: ## Optionally re-evaluate the most recent completed experiment
+evaluate: ## Evaluate the most recent completed experiment
 	@$(PY) $(ROOT)/scripts/evaluate_run.py
 
 .PHONY: auth-start

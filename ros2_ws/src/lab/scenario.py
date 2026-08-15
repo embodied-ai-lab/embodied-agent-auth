@@ -14,7 +14,19 @@ def repository_root() -> Path:
     configured = os.environ.get("ISCPS_LAB_ROOT")
     if configured:
         return Path(configured).resolve()
-    return Path(__file__).resolve().parents[4]
+
+    # Source-tree imports and a direct ``ros2 launch`` from the repository do
+    # not necessarily inherit the Makefile's environment.  Search both likely
+    # locations instead of guessing an ancestor of the installed module.
+    starts = (Path.cwd().resolve(), Path(__file__).resolve().parent)
+    for start in starts:
+        for candidate in (start, *start.parents):
+            if (candidate / "configs" / "scenario.yaml").is_file():
+                return candidate
+    raise RuntimeError(
+        "cannot locate the lab repository; run from its root or set "
+        "ISCPS_LAB_ROOT"
+    )
 
 
 def load_yaml(name: str, root: Path | None = None) -> dict[str, Any]:

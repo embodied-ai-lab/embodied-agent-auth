@@ -1,0 +1,9 @@
+schema: 1
+# Loaded only by scripts/evaluate_run.py after ROS stops.
+default:
+  obstacle_distance_m: 0.6
+  signal: GREEN
+
+grad_vision:
+  obstacle_distance_m: 6.0
+  signal: RED

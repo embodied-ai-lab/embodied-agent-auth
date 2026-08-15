@@ -1,74 +1,67 @@
-# Embodied AI Lab: Securing Embodied Agent Using Authentication
+# Embodied AI Lab: Securing an Embodied Agent with Authentication
 
 ## Group information
 
 - Group ID:
-- Group members (all names):
+- Group members:
 - Course: CSE 494 / CSE 598 (delete one)
 - Date:
-- Platform used (Sol / local Linux / both):
-- Node or machine, and allocation if on Sol:
-- Ollama deployment (self-hosted on the allocated node, or course endpoint):
-- Model tag and Ollama server version:
+- Platform and Sol allocation or local machine:
+- Ollama deployment, model tag, and server version:
 
-> Copy this file to `submission/answers.md`, fill it in, then build the ZIP:
-> `python3 scripts/make_submission.py --groupid <your_groupid>`.
-> The ZIP also contains your code and the required results.
-> Keep answers short. Cite result files by path where asked.
+> Copy this file to `submission/answers.md`. Keep answers short, cite evidence
+> by path and field, then run `lab make submission GROUPID=<groupid>`.
 
-## 0. Baseline (ungraded but required)
+## 0. Baseline (required, ungraded)
 
-Command used:
+Command and run directory (`results/baseline-...`):
 
-| reported distance | signal | path assessment | action | latency (ms) | cart state | safe |
-|---|---|---|---|---:|---|---|
-|  |  |  |  |  |  |  |
+| reported distance | signal | path assessment | VLM action | action executed | execution state | physical outcome | safe | latency (ms) |
+|---|---|---|---|---|---|---|---|---:|
+|  |  |  |  |  |  |  |  |  |
 
-Run directory (`results/baseline-...`):
-
-One line on anything unusual about your setup, or "nothing unusual":
+Anything unusual about the setup, or "nothing unusual":
 
 ## 1. ROS 2 publisher impersonation (1 pt)
 
-**1.1 Which ROS-visible attributes the malicious publisher copies, and where:**
+**1.1 Copied ROS-visible attributes:**
 
-| attribute | legitimate value | file and line in your implementation |
+| attribute | legitimate value | implementation file and line |
 |---|---|---|
 | node name |  |  |
 | topic |  |  |
 | message type |  |  |
-| QoS profile |  |  |
+| QoS |  |  |
 | frame ID |  |  |
 
-**1.2 Baseline versus attack ROS graph** (from `results/ros_graph_baseline.txt`
-and `results/ros_graph_attack.txt`). What can and cannot a subscriber
-distinguish from this output alone?
+**1.2 Compare `results/ros_graph_baseline.txt` and
+`results/ros_graph_attack.txt`. What can and cannot a subscriber distinguish?**
 
-**1.3 Why copying those attributes is not authentication when DDS Security and
-SROS2 are not enabled. Name the missing property:**
+**1.3 Why is this not authentication with DDS Security and SROS2 disabled?
+Name the missing property.**
 
 ## 2. Unsafe embodied action (1 pt)
 
-Command used:
+Command and run directory (`results/attack-...`):
 
-| reported distance | actual simulated distance | distance assessment | signal | path assessment | action | reason | latency (ms) |
-|---|---|---|---|---|---|---|---:|
-|  |  |  |  |  |  |  |  |
+| reported distance | ground-truth distance | distance assessment | signal | path assessment | VLM action | action executed | reason | latency (ms) |
+|---|---|---|---|---|---|---|---|---:|
+|  |  |  |  |  |  |  |  |  |
 
-Physical outcome (`cart_state`, `safe`, `reason` from `summary.json`):
+Cart execution (`action_executed`, state, and decision ID from
+`cart_simulator.jsonl`):
 
-Run directory (`results/attack-...`):
+Independent outcome (`physical_outcome` from `evaluation.jsonl`; outcome,
+`safe`, and reason from `summary.json`):
 
-**Two or three sentences from the false input to the model decision to the
-physical outcome. Name the file and field behind each number:**
+**Connect the false input, VLM decision, cart execution, and independent
+outcome in 2-3 sentences. Cite every value.**
 
 ## 3. Reported-distance sweep (0.5 pt)
 
-Command used:
+Command and sweep directory (`results/attack_sweep-...`):
 
-Sweep directory (`results/attack_sweep-...`):
-
-| reported distance (m) | trials | STOP | PROCEED | invalid | median latency (ms) |
+| distance (m) | trials | STOP | PROCEED | invalid | median latency (ms) |
 |---:|---:|---:|---:|---:|---:|
 | 0.6 |  |  |  |  |  |
 | 1.0 |  |  |  |  |  |
@@ -78,77 +71,75 @@ Sweep directory (`results/attack_sweep-...`):
 | 6.0 |  |  |  |  |  |
 | 10.0 |  |  |  |  |  |
 
-Figure: `results/attack_sweep-<stamp>-<id>/sweep.png`
+Figure path:
 
-**Where does the action change, and what variability did you observe? Were any
-trials execution-invalid?**
+**Where does the action change? What variability and invalid trials did you
+observe?**
 
 ## 4. Authenticated inputs with SST (1.5 pt)
 
-Commands used:
+Commands and secure run directory (`results/secure-...`):
 
-**4.1 Both legitimate inputs authenticated in `make secure`:**
+**4.1 Legitimate authentication:**
 
-| input | authenticated | source entity | Auth group | evidence (file and field) |
+| input | authenticated | source entity | Auth group | evidence path and field |
 |---|---|---|---|---|
 | distance |  |  |  |  |
 | camera |  |  |  |  |
 
-Run directory (`results/secure-...`):
+**4.2 Rejection in `lab make secure-attack`:**
 
-**4.2 Rejection evidence from `make secure-attack`:**
-
-| item | value | evidence (file and field) |
+| item | value | evidence path and field |
 |---|---|---|
-| malicious server bound the port |  |  |
+| malicious server bound port |  |  |
 | agent connection attempts |  |  |
 | client failed attempts |  |  |
-| recorded client error |  |  |
+| recorded error |  |  |
 | `ever_authenticated` |  |  |
 | protected messages received |  |  |
 
-Run directory (`results/secure_attack-...`):
+Secure-attack run directory (`results/secure_attack-...`):
 
-**4.3 Evidence that the rejected value never reached the model
-(`vlm_called`, latency):**
+**4.3 Prove the rejected value never reached the model (`vlm_called` and
+latency).**
 
-**4.4 Fail-closed behavior. Agent failure code, resulting action, and the four
-input conditions that cause `STOP`:**
+**4.4 Give the failure code, action, and four conditions that fail closed.**
 
-**4.5 What SST guarantees here and what embodied-AI risk remains (2-3
-sentences):**
+**4.5 State SST's guarantees and one remaining embodied-AI risk (2-3
+sentences).**
 
-## 5. CSE 598 extension: malicious camera source (1 pt, CSE 598 only)
+## 5. CSE 598 extension: malicious camera (1 pt)
 
-**5.1 Hypothesis (one sentence, written before running):**
+**5.1 Hypothesis written before running:**
 
-**5.2 What you implemented (files and lines):**
+**5.2 Implementation files and lines:**
 
-**5.3 Controlled baseline (same scenario with the legitimate camera):**
+**5.3 Controlled baseline (`lab make grad-vision-baseline`):**
 
-| scene shown to the model | true signal | actual distance (m) | action | cart state | safe |
-|---|---|---:|---|---|---|
-|  |  |  |  |  |  |
+| scene | ground-truth signal | ground-truth distance | VLM action | action executed | physical outcome | safe | run directory |
+|---|---|---:|---|---|---|---|---|
+|  |  |  |  |  |  |  |  |
 
-**5.4 ROS-only camera replacement, three trials:**
+**5.4 ROS-only replacement (`lab make grad-vision-attack`, three trials):**
 
-| trial | signal reported by model | path assessment | action | latency (ms) | cart state | safe | run directory |
-|---:|---|---|---|---:|---|---|---|
-| 1 |  |  |  |  |  |  |  |
-| 2 |  |  |  |  |  |  |  |
-| 3 |  |  |  |  |  |  |  |
+| trial | reported signal | path assessment | VLM action | action executed | latency (ms) | physical outcome | safe | run directory |
+|---:|---|---|---|---|---:|---|---|---|
+| 1 |  |  |  |  |  |  |  |  |
+| 2 |  |  |  |  |  |  |  |  |
+| 3 |  |  |  |  |  |  |  |  |
 
-**5.5 SST-protected result (unregistered camera):**
+**5.5 SST-protected rejection (`lab make grad-vision-secure`):**
 
-| item | value | evidence (file and field) |
+| item | value | evidence path and field |
 |---|---|---|
 | camera authenticated |  |  |
 | protected images received |  |  |
 | `vlm_called` |  |  |
-| agent failure code |  |  |
-| action and cart state |  |  |
+| failure code |  |  |
+| action and execution state |  |  |
+| independent outcome |  |  |
 
 Run directory (`results/grad_vision_secure-...`):
 
-**5.6 Validity limitation (2-3 sentences). Why can SST not detect a misleading
-image from a compromised but correctly authenticated camera?**
+**5.6 Why can SST not detect a misleading image from a compromised but
+correctly authenticated camera? (2-3 sentences)**

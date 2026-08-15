@@ -40,6 +40,7 @@ set -euo pipefail
 
 PROJECT_ROOT="${SLURM_SUBMIT_DIR:-$PWD}"
 cd "${PROJECT_ROOT}"
+LAB_MODEL_STORE="${OLLAMA_MODELS:-/scratch/${USER}/ollama-models}"
 
 SIF="${SIF:-/scratch/${USER}/embodied-agent-auth.sif}"
 [[ -f "${SIF}" ]] || {
@@ -51,7 +52,7 @@ SIF="${SIF:-/scratch/${USER}/embodied-agent-auth.sif}"
 module load apptainer/1.4.5
 module load ollama/0.30.3
 
-export OLLAMA_MODELS="${OLLAMA_MODELS:-/scratch/${USER}/ollama-models}"
+export OLLAMA_MODELS="${LAB_MODEL_STORE}"
 export OLLAMA_HOST=http://127.0.0.1:11434
 export VLM_MODEL=qwen2.5vl:3b
 export VLM_TIMEOUT_S=90
@@ -114,6 +115,7 @@ lab make secure-attack
 
 # CSE 598 extension. The common CSE 494/598 job skips Part 5 by default.
 if [[ "${RUN_GRAD_EXTENSION:-0}" == "1" ]]; then
+  lab make grad-vision-baseline
   for _ in 1 2 3; do
     lab make grad-vision-attack
   done

@@ -23,6 +23,7 @@ COPY . .
 # The build context must contain the initialized third_party/iotauth submodule.
 # This installs from that source directly; it does not generate credentials.
 RUN ./scripts/setup.sh
+RUN ./scripts/build.sh
 
 ENV ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 RUN echo 'source /opt/ros/jazzy/setup.bash' >> /etc/bash.bashrc \

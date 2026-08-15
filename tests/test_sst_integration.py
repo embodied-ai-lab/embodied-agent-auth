@@ -28,7 +28,7 @@ def test_legitimate_distance_and_image_cross_real_secure_channels(
     if os.environ.get("ISCPS_RUN_SST_TESTS") != "1":
         pytest.skip("set ISCPS_RUN_SST_TESTS=1 after make generate and auth-start")
 
-    from iscps_sst_lab.sst_link import (
+    from lab.sst_link import (
         SecureInputAuthContext,
         SecureInputClient,
         SecureSourceServer,

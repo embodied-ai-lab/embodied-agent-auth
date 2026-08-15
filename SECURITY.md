@@ -1,75 +1,46 @@
-# Security and threat model
+# Security and responsible use
 
-## Scope
+This is a loopback-only educational exercise. Run malicious nodes only against
+this repository's processes on a machine you are authorized to use. Never
+target another student's work, another host, or a production system. On Sol,
+run ROS, Auth, and VLM inference only in an allocation—not on a login node.
 
-This is a loopback-only educational security exercise. Use the malicious nodes
-only against this repository's own processes on a machine you are authorized to
-use. Do not point them at another student's processes, another host, or any
-production system. Auth is the Secure Swarm Toolkit (SST) authentication and
-authorization service. Run ROS, Auth, and live VLM inference only on a
-workstation or an allocated compute node, never on a Sol login node.
+## Threat model
 
-## Project safeguards
+The attacker can inspect ROS discovery, run a node in the same ROS domain, copy
+a legitimate publisher's ROS-visible attributes, replace a legitimate source,
+and bind an expected loopback port. The attacker has no valid SST credentials
+and is not registered with Auth.
 
-- Runtime credentials, keys, databases, passwords, and generated configs stay
-  under gitignored `runtime/sst/`.
-- Run scripts signal only their recorded process groups and Auth PID. They
-  never terminate processes by name or port owner.
-- Graded commands preflight the live model. They never download a model or
-  substitute a mock.
-- Model failure and missing authenticated input both stop the cart. Only model
-  failure marks the VLM experiment failed.
+The host, cart, VLM agent, Auth service, Ollama server, and legitimate sensors
+are trusted for this lab. Host compromise, credential theft, and denial-of-
+service prevention are out of scope.
 
-## Protected assets
+## Security claims
 
-The protected assets are:
+With DDS Security and SROS2 disabled, matching ROS node, topic, type, QoS, and
+frame attributes do not authenticate a publisher.
 
-- The numerical distance delivered to the VLM
-- The camera bytes delivered to the VLM
-- The VLM-selected cart action
-- JSONL logs that correlate inputs, inference, actions, and simulated physical
-  outcomes
+In protected modes, SST:
 
-## Trust assumptions
+- authenticates entities registered through Auth;
+- protects message confidentiality and integrity; and
+- prevents an unregistered replacement from delivering sensor data to the VLM.
 
-The cart, sensors, VLM agent, Auth, and Ollama server run on one trusted
-workstation or allocated compute node for this teaching exercise. The attacker
-does not compromise the operating system, Auth, the Ollama server, the VLM
-agent, the cart simulator, or a legitimate sensor process.
+The agent stops on missing, stale, invalid, or unauthenticated input. SST does
+not prove that an authenticated sensor is truthful, make VLM reasoning correct,
+detect misleading pixels from a compromised camera, protect a compromised
+host, or certify an action as safe.
 
-## Attacker capabilities
+## Runtime safeguards
 
-The attacker can run a local ROS 2 node in the same domain, inspect discovery,
-copy the legitimate publisher's ROS-visible attributes, stop a legitimate
-source during the experiment, and bind a localhost sensor port when the
-legitimate SST server is absent. The attacker has no legitimate SST credentials
-and is not registered with Auth. Denial of service is observable but not
-prevented.
+- Generated credentials, keys, databases, and configs stay under gitignored
+  `runtime/sst/` and are excluded from submissions.
+- Run scripts stop only process IDs and groups they recorded.
+- Graded commands require the live model; they do not download it or substitute
+  a mock.
+- The cart receives only the VLM action. Ground truth is read solely by the
+  independent evaluator after ROS stops.
 
-## Security properties
-
-In ROS-only mode with DDS Security disabled, the application accepts matching
-ROS messages without authenticating the publisher. ROS 2 provides DDS Security
-and SROS2, but the initial configuration used here does not enable them.
-
-In SST-protected mode, SST:
-
-- Authenticates registered entities through an Auth-authorized session key
-- Protects message confidentiality and integrity
-- Rejects an unregistered replacement that cannot establish an authenticated
-  SST channel
-- Prevents unauthenticated distance or image data from reaching the VLM
-
-The agent fails closed: if a required input is missing, invalid, stale, or
-unauthenticated, it selects `STOP`.
-
-## Out of scope
-
-SST does not prove that an authenticated sensor is truthful, make VLM reasoning
-correct, detect adversarial pixels from a compromised legitimate camera,
-protect a compromised host, or authorize the semantic safety of an action.
-Source authentication, message confidentiality, and message integrity are
-necessary controls, not a complete embodied-AI safety argument.
-
-The current VLM emits one discrete high-level action. It is not a VLA model and
-does not produce motor trajectories.
+Report suspected credential exposure or unintended interaction with another
+user's processes to the instructor and stop the affected run.

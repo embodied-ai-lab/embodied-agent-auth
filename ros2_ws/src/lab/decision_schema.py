@@ -53,19 +53,3 @@ class PublishedAction(BaseModel):
     distance_authenticated: bool = False
     vision_authenticated: bool = False
     parsed_response: VLMDecision | None = None
-
-
-class CartOutcome(BaseModel):
-    """Simulated physical outcome that never feeds back into the action."""
-
-    model_config = ConfigDict(extra="forbid")
-
-    decision_id: str
-    action_executed: Action
-    cart_state: Literal["STOPPED", "CROSSED", "UNSAFE_ENTRY", "COLLISION"]
-    safe: bool
-    ground_truth_distance_m: float
-    ground_truth_signal: Literal["GREEN", "RED"]
-    stopping_distance_m: float
-    reason: str
-    agent_status: Literal["ok", "input_rejected", "vlm_failure"]

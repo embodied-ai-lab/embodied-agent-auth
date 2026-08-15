@@ -1,22 +1,23 @@
-from glob import glob
+from setuptools import setup
 
-from setuptools import find_packages, setup
-
-PACKAGE_NAME = "iscps_sst_lab"
+PACKAGE_NAME = "lab"
 
 setup(
     name=PACKAGE_NAME,
     version="2.0.0",
-    packages=find_packages(exclude=["test", "test.*"]),
+    packages=[PACKAGE_NAME],
+    # The ROS project directory is also the import package. Use a normal
+    # (non-editable) colcon build so setuptools installs it as ``lab``.
+    package_dir={PACKAGE_NAME: "."},
     data_files=[
         ("share/ament_index/resource_index/packages", [f"resource/{PACKAGE_NAME}"]),
         (f"share/{PACKAGE_NAME}", ["package.xml"]),
-        (f"share/{PACKAGE_NAME}/launch", glob("launch/*.py")),
+        (f"share/{PACKAGE_NAME}/launch", ["launch/lab.launch.py"]),
     ],
     install_requires=["setuptools", "Pillow", "pydantic>=2", "PyYAML"],
     zip_safe=True,
-    maintainer="Hokeun Kim",
-    maintainer_email="hokeun@asu.edu",
+    maintainer="CSE 494/598 Course Staff",
+    maintainer_email="iscps-lab@example.invalid",
     description=(
         "ISCPS course project: securing multimodal perception for a ROS 2 VLM "
         "agent with the Secure Swarm Toolkit."

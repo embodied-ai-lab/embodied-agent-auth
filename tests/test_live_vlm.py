@@ -4,8 +4,8 @@ import os
 import socket
 
 import pytest
-from iscps_sst_lab.scenario import LabConfig
-from iscps_sst_lab.vlm import OllamaVLMClient
+from lab.scenario import LabConfig
+from lab.vlm import OllamaVLMClient
 
 pytestmark = pytest.mark.live_vlm
 

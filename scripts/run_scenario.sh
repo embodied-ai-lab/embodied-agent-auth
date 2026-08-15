@@ -19,8 +19,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 case "${MODE}" in
-  baseline|attack|secure|secure-attack|grad-vision-attack|grad-vision-secure) ;;
-  *) die "usage: scripts/run_scenario.sh {baseline|attack|secure|secure-attack|grad-vision-attack|grad-vision-secure}" ;;
+  baseline|attack|secure|secure-attack|grad-vision-baseline|grad-vision-attack|grad-vision-secure) ;;
+  *) die "usage: scripts/run_scenario.sh {baseline|attack|secure|secure-attack|grad-vision-baseline|grad-vision-attack|grad-vision-secure}" ;;
 esac
 
 iscps_refuse_login_node
@@ -82,26 +82,16 @@ if [[ "${MODE}" == secure || "${MODE}" == secure-attack \
   fi
 fi
 
-case "${MODE}" in
-  baseline) LAUNCH=baseline.launch.py; EXTRA=() ;;
-  attack)
-    LAUNCH=attack.launch.py
-    EXTRA=("false_distance:=${FALSE_DISTANCE}")
-    ;;
-  secure) LAUNCH=secure.launch.py; EXTRA=() ;;
-  secure-attack) LAUNCH=secure_attack.launch.py; EXTRA=() ;;
-  grad-vision-attack) LAUNCH=grad_vision_attack.launch.py; EXTRA=() ;;
-  grad-vision-secure) LAUNCH=grad_vision_secure.launch.py; EXTRA=() ;;
-esac
-
 iscps_banner "${MODE}" "${RUN_DIR}"
 iscps_spawn ros_launch "${RUN_DIR}/terminal.log" -- \
-  ros2 launch iscps_sst_lab "${LAUNCH}" "${EXTRA[@]}"
+  ros2 launch lab lab.launch.py \
+    "mode:=${MODE}" "false_distance:=${FALSE_DISTANCE}"
 
 if ! iscps_wait_for_log \
-  "${RUN_DIR}/cart_simulator.jsonl" '"kind": "physical_outcome"' \
-  "${DURATION}" "cart outcome"; then
+  "${RUN_DIR}/cart_simulator.jsonl" '"kind": "action_executed"' \
+  "${DURATION}" "executed cart action"; then
   exit 2
 fi
 iscps_stop ros_launch
+# Ground truth is loaded only now, after ROS and the cart have stopped.
 "${PY}" "${ISCPS_LAB_ROOT}/scripts/evaluate_run.py" --run-dir "${RUN_DIR}"

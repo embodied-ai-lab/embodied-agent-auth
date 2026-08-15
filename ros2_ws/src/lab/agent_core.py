@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import math
-import time
 import uuid
 from dataclasses import dataclass
 from typing import Protocol
@@ -228,9 +227,3 @@ class VLMAgentCore:
             parsed_response=call.decision,
         )
         return AgentResult(published=published, vlm_call=call)
-
-
-def current_observation(**kwargs: object) -> Observation:
-    """Create an observation stamped with the current wall-clock time."""
-
-    return Observation(now=time.time(), **kwargs)  # type: ignore[arg-type]

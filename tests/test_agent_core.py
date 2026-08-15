@@ -3,9 +3,9 @@ from __future__ import annotations
 import time
 
 from conftest import FakeProvider
-from iscps_sst_lab.agent_core import Observation, SensorSample, VLMAgentCore
-from iscps_sst_lab.ground_truth import judge_action
-from iscps_sst_lab.vlm import VLMError
+from evaluate_run import judge_action
+from lab.agent_core import Observation, SensorSample, VLMAgentCore
+from lab.vlm import VLMError
 
 
 def observation(green_image, **changes):

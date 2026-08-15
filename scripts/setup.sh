@@ -46,8 +46,6 @@ repository's .venv, then rerun make setup."
 "${VENV_PY}" -m pip install \
   "pydantic>=2" Pillow PyYAML pytest pytest-timeout ruff
 "${VENV_PY}" -m pip install "${ISCPS_IOTAUTH_DIR}/entity/python"
-"${VENV_PY}" -m pip install -e \
-  "${ISCPS_LAB_ROOT}/ros2_ws/src/iscps_sst_lab" --no-deps
 
 log_ok "Python environment ready at .venv"
 "${VENV_PY}" -c 'import rclpy; print("ROS rclpy import: OK")'

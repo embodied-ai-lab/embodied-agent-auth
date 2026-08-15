@@ -13,12 +13,12 @@ See docs/SETUP.md."
 fi
 cd "${ISCPS_LAB_ROOT}/ros2_ws"
 if "${PY}" -m colcon --help >/dev/null 2>&1; then
-  log "${PY} -m colcon build --symlink-install"
-  "${PY}" -m colcon build --symlink-install --event-handlers console_direct+
+  log "${PY} -m colcon build"
+  "${PY}" -m colcon build --event-handlers console_direct+
 else
   need_cmd colcon
-  log "colcon build --symlink-install"
-  colcon build --symlink-install --event-handlers console_direct+
+  log "colcon build"
+  colcon build --event-handlers console_direct+
 fi
 log_ok "workspace built"
 log "Source the overlay with: source ros2_ws/install/setup.bash"

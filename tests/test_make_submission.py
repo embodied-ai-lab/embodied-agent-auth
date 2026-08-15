@@ -23,6 +23,7 @@ RUN_MODES = (
     ("secure_attack-20260801T123000Z-d4", "secure-attack", "STOP", False, None),
 )
 EXTENSION_MODES = (
+    ("grad_vision_baseline-20260801T123500Z-e0", "grad-vision-baseline", "STOP", True, 900.0),
     ("grad_vision_attack-20260801T124000Z-e5", "grad-vision-attack", "PROCEED", True, 987.8),
     ("grad_vision_secure-20260801T125000Z-f6", "grad-vision-secure", "STOP", False, None),
 )
@@ -63,7 +64,27 @@ def _write_run(results: Path, name: str, mode: str, action: str, called: bool, l
         json.dumps({"kind": "vlm_decision", "action": action}) + "\n", encoding="utf-8"
     )
     (run / "cart_simulator.jsonl").write_text(
-        json.dumps({"kind": "physical_outcome", "action_executed": action}) + "\n",
+        json.dumps(
+            {
+                "kind": "action_executed",
+                "decision_id": "decision-1",
+                "action_executed": action,
+                "cart_state": "STOPPED" if action == "STOP" else "MOVING",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (run / "evaluation.jsonl").write_text(
+        json.dumps(
+            {
+                "kind": "physical_outcome",
+                "decision_id": "decision-1",
+                "action_evaluated": action,
+                "safe": action == "STOP",
+            }
+        )
+        + "\n",
         encoding="utf-8",
     )
     (run / "terminal.log").write_text("[INFO] launch\n", encoding="utf-8")
@@ -104,7 +125,7 @@ def project(tmp_path, repo_root) -> Path:
     root = tmp_path / "project"
     for name in ("configs", "scripts", "sst", "slurm", "containers"):
         shutil.copytree(repo_root / name, root / name)
-    package = "ros2_ws/src/iscps_sst_lab"
+    package = "ros2_ws/src/lab"
     shutil.copytree(repo_root / package, root / package)
     shutil.copytree(repo_root / "assets", root / "assets")
     for name in ("Makefile", "pyproject.toml", "dependency-lock.json"):
@@ -156,6 +177,14 @@ def test_missing_required_results_fails_clearly(project, capsys):
     assert "attack_sweep-*" in capsys.readouterr().err
 
 
+def test_missing_evaluator_truth_fails_clearly(project, capsys):
+    (project / "submission" / "answers.md").write_text("# answers\n", encoding="utf-8")
+    (project / "configs" / "ground_truth.yaml").unlink()
+    module = _load_builder(project)
+    assert _build(module, project, "--groupid", "07") == 2
+    assert "configs/ground_truth.yaml" in capsys.readouterr().err
+
+
 def test_archive_contains_answers_code_and_results(project, capsys):
     (project / "submission" / "answers.md").write_text("# answers\n", encoding="utf-8")
     module = _load_builder(project)
@@ -170,12 +199,14 @@ def test_archive_contains_answers_code_and_results(project, capsys):
 
     assert "answers.md" in names
     assert "Makefile" in names
+    assert "configs/ground_truth.yaml" in names
     assert "configs/scenario.yaml" in names
-    assert "ros2_ws/src/iscps_sst_lab/iscps_sst_lab/sst_link.py" in names
+    assert "ros2_ws/src/lab/sst_link.py" in names
     assert "results/ros_graph_baseline.txt" in names
     assert f"results/{SWEEP_DIR}/trials.csv" in names
     for name, *_ in RUN_MODES:
         assert f"results/{name}/summary.json" in names
+        assert f"results/{name}/evaluation.jsonl" in names
         assert f"results/{name}/terminal.log" in names
 
     out = capsys.readouterr().out

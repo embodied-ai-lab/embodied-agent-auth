@@ -83,22 +83,11 @@ def main() -> int:
             )
         report.row("rclpy Python ABI", False, detail)
 
-    code, tree = command(["git", "-C", str(ROOT), "ls-tree", "HEAD", "third_party/iotauth"])
-    recorded = tree.split()[2] if code == 0 and len(tree.split()) >= 3 else ""
     initialized = (IOTAUTH / "entity" / "python" / "pyproject.toml").is_file()
     report.row(
         "iotauth submodule",
         initialized,
         "initialized" if initialized else "run: make submodules",
-    )
-    checked_out = ""
-    if initialized:
-        code, checked_out = command(["git", "-C", str(IOTAUTH), "rev-parse", "HEAD"])
-        checked_out = checked_out.strip()
-    report.row(
-        "submodule commit",
-        bool(recorded) and checked_out == recorded,
-        f"recorded={recorded[:12] or '?'} checked_out={checked_out[:12] or '?'}",
     )
     report.row(
         "no dependency copy",

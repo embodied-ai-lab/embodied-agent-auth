@@ -4,11 +4,9 @@ This directory holds pinned external sources. It contains exactly one entry.
 
 ## `third_party/iotauth`
 
-The Secure Swarm Toolkit (SST) reference implementation, tracked as a Git
-submodule pinned to one commit by this repository. It is the only copy of
-IoTAuth used here. `make setup` installs its Python entity API directly from
-`third_party/iotauth/entity/python`, and `make build-auth` builds Auth from
-`third_party/iotauth/auth`.
+`third_party/iotauth` is the lab's only IoTAuth/SST source. It is a pinned Git
+submodule. `make setup` installs its Python entity API, and `make build-auth`
+builds Auth from it.
 
 Initialize it after cloning:
 
@@ -16,10 +14,9 @@ Initialize it after cloning:
 git submodule update --init third_party/iotauth
 ```
 
-Generated credentials, keys, Auth databases, and entity configuration files are
-written under the gitignored `runtime/sst/` directory, never into this
-submodule. `make doctor` checks that the submodule is present at the recorded
-commit and that its public API imports.
+Generated credentials, keys, databases, and configs go under gitignored
+`runtime/sst/`, never into this submodule. `make doctor` checks that the
+dependency and public Python API are available.
 
 Upstream project: <https://github.com/iotauth/iotauth> (BSD-2-Clause). See
 [../THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).

@@ -3,7 +3,7 @@ from __future__ import annotations
 import base64
 
 import pytest
-from iscps_sst_lab.vlm import OllamaVLMClient, VLMError
+from lab.vlm import OllamaVLMClient, VLMError
 
 
 def client() -> OllamaVLMClient:

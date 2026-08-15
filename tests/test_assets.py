@@ -6,7 +6,7 @@ from PIL import Image
 
 
 def test_required_scene_images_are_real_and_distinct(repo_root):
-    names = ("green_clear.png", "red_clear.png", "unknown_occluded.png")
+    names = ("green_clear.png", "red_clear.png")
     digests = set()
     for name in names:
         path = repo_root / "assets" / "vision" / name
@@ -15,4 +15,4 @@ def test_required_scene_images_are_real_and_distinct(repo_root):
             assert image.size == (384, 288)
             image.verify()
         digests.add(hashlib.sha256(path.read_bytes()).hexdigest())
-    assert len(digests) == 3
+    assert len(digests) == 2

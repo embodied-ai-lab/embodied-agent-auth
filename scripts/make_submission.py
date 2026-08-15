@@ -54,14 +54,15 @@ PROJECT_FILES = (
 
 # Student work that must exist before a submission is worth building.
 REQUIRED_SOURCE_FILES = (
+    "configs/ground_truth.yaml",
     "configs/scenario.yaml",
     "configs/sst.yaml",
     "configs/topics.yaml",
     "configs/vlm.yaml",
-    "ros2_ws/src/iscps_sst_lab/iscps_sst_lab/malicious_distance_sensor_node.py",
-    "ros2_ws/src/iscps_sst_lab/iscps_sst_lab/malicious_vision_node.py",
-    "ros2_ws/src/iscps_sst_lab/iscps_sst_lab/sst_link.py",
-    "ros2_ws/src/iscps_sst_lab/iscps_sst_lab/vlm_agent_node.py",
+    "ros2_ws/src/lab/malicious_distance_sensor_node.py",
+    "ros2_ws/src/lab/malicious_vision_node.py",
+    "ros2_ws/src/lab/sst_link.py",
+    "ros2_ws/src/lab/vlm_agent_node.py",
 )
 
 # Standalone result files the assignment asks for by name.
@@ -81,6 +82,7 @@ REQUIRED_RUN_GLOBS = (
 
 # CSE 598 extension runs. Absence is reported but never fatal.
 EXTENSION_RUN_GLOBS = (
+    "grad_vision_baseline-*",
     "grad_vision_attack-*",
     "grad_vision_secure-*",
 )

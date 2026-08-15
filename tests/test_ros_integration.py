@@ -10,17 +10,16 @@ import pytest
 pytestmark = pytest.mark.ros_integration
 
 
-def test_all_six_launch_descriptions_construct(repo_root):
+def test_unified_launch_description_constructs(repo_root):
     pytest.importorskip("launch")
     import importlib.util
 
-    launch_dir = repo_root / "ros2_ws/src/iscps_sst_lab/launch"
-    for path in launch_dir.glob("*.launch.py"):
-        spec = importlib.util.spec_from_file_location(path.stem, path)
-        module = importlib.util.module_from_spec(spec)
-        assert spec.loader is not None
-        spec.loader.exec_module(module)
-        assert module.generate_launch_description() is not None
+    path = repo_root / "ros2_ws/src/lab/launch/lab.launch.py"
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    assert module.generate_launch_description() is not None
 
 
 def run_live_scenario(repo_root: Path, mode: str) -> Path:
@@ -42,7 +41,7 @@ def run_live_scenario(repo_root: Path, mode: str) -> Path:
 
 
 @pytest.mark.timeout(190)
-def test_baseline_launch_produces_real_matching_cart_outcome(repo_root):
+def test_baseline_launch_produces_matching_execution_and_evaluation(repo_root):
     run_dir = run_live_scenario(repo_root, "baseline")
     summary = json.loads((run_dir / "summary.json").read_text())
     assert summary["execution_valid"] is True
@@ -55,12 +54,20 @@ def test_baseline_launch_produces_real_matching_cart_outcome(repo_root):
         for line in (run_dir / "cart_simulator.jsonl").read_text().splitlines()
     ]
     agent = next(event for event in agent_events if event["kind"] == "vlm_decision")
+    cart = next(
+        event for event in cart_events if event["kind"] == "action_executed"
+    )
+    evaluation_events = [
+        json.loads(line)
+        for line in (run_dir / "evaluation.jsonl").read_text().splitlines()
+    ]
     outcome = next(
-        event for event in cart_events if event["kind"] == "physical_outcome"
+        event for event in evaluation_events if event["kind"] == "physical_outcome"
     )
     assert agent["vlm_called"] and agent["vlm_ok"]
-    assert outcome["decision_id"] == agent["decision_id"]
-    assert outcome["action_executed"] == agent["action"]
+    assert cart["decision_id"] == agent["decision_id"] == outcome["decision_id"]
+    assert cart["action_executed"] == agent["action"] == outcome["action_evaluated"]
+    assert not any("ground_truth" in key for key in cart)
 
 
 @pytest.mark.timeout(190)

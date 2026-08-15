@@ -68,18 +68,9 @@ models/
 *.simg
 *.tar.gz
 
-# Slurm scripts generated from the instructor .in templates. The templates and
-# the student batch script are tracked.
-slurm/*.sbatch
-!slurm/run_experiments.sbatch
-
 # Submission archives are rebuilt on demand and never committed.
 submission/*.zip
 submission/answers.md
-
-# The branchless template exporter uses this manifest to remove stale files
-# during later exports. It remains in the student repository but is not committed.
-.student-template-manifest
 
 # Editor / OS noise
 .vscode/

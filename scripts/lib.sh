@@ -29,7 +29,7 @@ ISCPS_LAB_ROOT="${ISCPS_LAB_ROOT:-$(iscps_find_root)}"
 export ISCPS_LAB_ROOT
 readonly ISCPS_LAB_ROOT
 
-ISCPS_PKG_DIR="${ISCPS_LAB_ROOT}/ros2_ws/src/iscps_sst_lab"
+ISCPS_PKG_DIR="${ISCPS_LAB_ROOT}/ros2_ws/src/lab"
 ISCPS_RUNTIME_DIR="${ISCPS_LAB_ROOT}/runtime"
 ISCPS_IOTAUTH_DIR="${ISCPS_LAB_ROOT}/third_party/iotauth"
 export ISCPS_PKG_DIR ISCPS_RUNTIME_DIR ISCPS_IOTAUTH_DIR
@@ -142,7 +142,7 @@ iscps_new_run_dir() {
   stamp="$(date -u +%Y%m%dT%H%M%SZ)"
   run_id="$(od -An -N4 -tx1 /dev/urandom | tr -d ' \n')"
   dir="${ISCPS_LAB_ROOT}/results/${mode}-${stamp}-${run_id}"
-  mkdir -p "${dir}"
+  mkdir -p "${ISCPS_RUNTIME_DIR}" "${dir}"
   printf '%s\n' "${dir}"
 }
 
@@ -312,7 +312,7 @@ iscps_require_ports_free() {
   done
   if (( ${#conflicts[@]} > 0 )); then
     log_err "these lab ports are already in use: ${conflicts[*]}"
-    log_err "Another run may still be active. Stop it, or change the ports in configs/scenario.yaml."
+    log_err "Another run may still be active. Stop it, or change the ports in configs/sst.yaml."
     log_err "This script will not kill processes it did not start."
     return 1
   fi

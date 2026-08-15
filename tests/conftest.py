@@ -7,15 +7,15 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = ROOT / "ros2_ws" / "src" / "iscps_sst_lab"
+SOURCE_ROOT = ROOT / "ros2_ws" / "src"
 SCRIPTS = ROOT / "scripts"
-if str(PACKAGE) not in sys.path:
-    sys.path.insert(0, str(PACKAGE))
+if str(SOURCE_ROOT) not in sys.path:
+    sys.path.insert(0, str(SOURCE_ROOT))
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from iscps_sst_lab.decision_schema import VLMDecision  # noqa: E402
-from iscps_sst_lab.vlm import VLMCall  # noqa: E402
+from lab.decision_schema import VLMDecision  # noqa: E402
+from lab.vlm import VLMCall  # noqa: E402
 
 
 @pytest.fixture
