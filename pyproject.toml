@@ -34,8 +34,8 @@ ignore = ["E203"]
 [tool.ruff.lint.per-file-ignores]
 # STUDENT TEMPLATE ONLY: these files carry ISCPS-STUDENT-TODO scaffolds, so the
 # imports they pre-provide are unused until you implement the TODOs.
-"ros2_ws/src/lab/malicious_distance_sensor_node.py" = ["F401"]
-"ros2_ws/src/lab/malicious_vision_node.py" = ["F401"]
+"ros2_ws/src/lab/malicious_distance_sensor.py" = ["F401"]
+"ros2_ws/src/lab/malicious_vision.py" = ["F401"]
 "ros2_ws/src/lab/sst_link.py" = ["F401"]
 # Scripts add package/scripts dirs to sys.path before importing lab modules.
 "scripts/*.py" = ["E402"]

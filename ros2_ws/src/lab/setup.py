@@ -26,15 +26,15 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            f"distance_sensor_node = {PACKAGE_NAME}.distance_sensor_node:main",
-            f"vision_node = {PACKAGE_NAME}.vision_node:main",
+            f"distance_sensor_node = {PACKAGE_NAME}.distance_sensor:main",
+            f"vision_node = {PACKAGE_NAME}.vision:main",
             f"vlm_agent_node = {PACKAGE_NAME}.vlm:main",
-            f"cart_simulator_node = {PACKAGE_NAME}.cart_simulator_node:main",
+            f"cart_simulator_node = {PACKAGE_NAME}.cart:main",
             (
                 "malicious_distance_sensor_node = "
-                f"{PACKAGE_NAME}.malicious_distance_sensor_node:main"
+                f"{PACKAGE_NAME}.malicious_distance_sensor:main"
             ),
-            f"malicious_vision_node = {PACKAGE_NAME}.malicious_vision_node:main",
+            f"malicious_vision_node = {PACKAGE_NAME}.malicious_vision:main",
         ],
     },
 )

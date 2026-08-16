@@ -46,7 +46,7 @@ def test_graded_commands_have_no_backend_selector(repo_root):
 
 def test_cart_is_ground_truth_free_and_evaluation_is_offline(repo_root):
     package = repo_root / "ros2_ws/src/lab"
-    cart = (package / "cart_simulator_node.py").read_text(encoding="utf-8")
+    cart = (package / "cart.py").read_text(encoding="utf-8")
     launch = (package / "launch/lab.launch.py").read_text(encoding="utf-8")
     evaluator = (repo_root / "scripts/evaluate_run.py").read_text(encoding="utf-8")
     runner = (repo_root / "scripts/run_scenario.sh").read_text(encoding="utf-8")

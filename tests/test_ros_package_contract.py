@@ -11,11 +11,24 @@ def test_flat_ros_package_installs_unified_launch(repo_root):
     assert (package / "resource/lab").is_file()
     assert (package / "vlm.py").is_file()
     assert (package / "validation.py").is_file()
+    for module in (
+        "cart.py",
+        "distance_sensor.py",
+        "malicious_distance_sensor.py",
+        "malicious_vision.py",
+        "vision.py",
+    ):
+        assert (package / module).is_file()
     for removed in (
         "agent_core.py",
+        "cart_simulator_node.py",
         "decision_schema.py",
+        "distance_sensor_node.py",
         "image_validation.py",
+        "malicious_distance_sensor_node.py",
+        "malicious_vision_node.py",
         "sensor_payloads.py",
+        "vision_node.py",
         "vlm_agent_node.py",
     ):
         assert not (package / removed).exists()

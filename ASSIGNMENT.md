@@ -14,6 +14,30 @@ recorded execution; neither the cart nor VLM receives ground truth.
 You will impersonate ROS 2 sensor publishers, measure the effect on the VLM,
 and use SST to authenticate legitimate sources.
 
+## ROS nodes and source files
+
+### Default nodes
+
+The default experiment graph uses these nodes:
+
+| Role | ROS node name | Executable | Python source |
+|---|---|---|---|
+| Distance sensor | `/distance_sensor_node` | `distance_sensor_node` | [`distance_sensor.py`](ros2_ws/src/lab/distance_sensor.py) |
+| Camera | `/vision_node` | `vision_node` | [`vision.py`](ros2_ws/src/lab/vision.py) |
+| VLM agent | `/vlm_agent_node` | `vlm_agent_node` | [`vlm.py`](ros2_ws/src/lab/vlm.py) |
+| Cart | `/cart_simulator_node` | `cart_simulator_node` | [`cart.py`](ros2_ws/src/lab/cart.py) |
+
+### Malicious replacement nodes
+
+Attack modes replace one legitimate sensor with one of these executables. The
+replacement deliberately uses the legitimate node's ROS name; the executable
+and source filename remain distinct.
+
+| Role | ROS node name used | Executable | Python source |
+|---|---|---|---|
+| Distance replacement | `/distance_sensor_node` | `malicious_distance_sensor_node` | [`malicious_distance_sensor.py`](ros2_ws/src/lab/malicious_distance_sensor.py) |
+| Vision replacement | `/vision_node` | `malicious_vision_node` | [`malicious_vision.py`](ros2_ws/src/lab/malicious_vision.py) |
+
 ## Part 0 - Setup and baseline (required, ungraded)
 
 Follow [README.md](README.md). On Sol, use the documented `lab` wrapper for
@@ -74,7 +98,7 @@ lab ros2 topic info -v /iscps_sst/distance >> results/ros_graph_baseline.txt
 
 ## Part 1 - ROS 2 publisher impersonation (1 pt)
 
-Complete the TODOs in `ros2_ws/src/lab/malicious_distance_sensor_node.py`.
+Complete the TODOs in `ros2_ws/src/lab/malicious_distance_sensor.py`.
 Reuse the legitimate node name, topic, `sensor_msgs/msg/Range` type, QoS, and
 frame ID while reporting a configurable false distance. The attack replaces
 the legitimate source; it is not a publisher race.
@@ -132,7 +156,7 @@ variability. An execution-invalid trial is a run failure, not variability.
 
 Complete the SST channel TODOs in `ros2_ws/src/lab/sst_link.py` and the
 unregistered-source TODO in
-`ros2_ws/src/lab/malicious_distance_sensor_node.py`. The malicious source has
+`ros2_ws/src/lab/malicious_distance_sensor.py`. The malicious source has
 no credentials and is absent from `sst/configs/warehouse_cart.graph`.
 
 ```bash
@@ -160,7 +184,7 @@ Report:
 
 CSE 494 students are not graded on this part. The true signal is red and the
 actual distance is 6.0 m. Complete the TODOs in
-`ros2_ws/src/lab/malicious_vision_node.py` to replace the legitimate red image
+`ros2_ws/src/lab/malicious_vision.py` to replace the legitimate red image
 with the green image.
 
 ```bash
