@@ -21,7 +21,7 @@
 #SBATCH --job-name=embodied-agent-auth
 #SBATCH --account=class_cse494598fall2026
 #SBATCH --partition=public
-#SBATCH --qos=public
+#SBATCH --qos=class
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
