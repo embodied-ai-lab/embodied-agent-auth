@@ -83,7 +83,7 @@ up, so keep source changes in the group's private repository.
 ### 1. Build the container in a CPU allocation
 
 ```bash
-interactive -A class_cse494598fall2026 -p public -q public -t 60 -c 4 --mem=16G
+interactive -A class_cse494598fall2026 -p public -q class -t 60 -c 4 --mem=16G
 module load apptainer/1.4.5 squashfs-4.6.1-gcc-11.2.0
 cd /scratch/$USER/<PRIVATE_REPOSITORY>
 apptainer build /scratch/$USER/embodied-agent-auth.sif containers/Apptainer.def
@@ -97,7 +97,7 @@ exists.
 Ollama and the experiment use loopback, so they must run on the same node.
 
 ```bash
-interactive -A class_cse494598fall2026 -p htc -q public -t 240 -c 8 --mem=32G \
+interactive -A class_cse494598fall2026 -p htc -q class -t 240 -c 8 --mem=32G \
     --gres=gpu:a100.20gb=1
 module load apptainer/1.4.5 ollama/0.30.3
 cd /scratch/$USER/<PRIVATE_REPOSITORY>
