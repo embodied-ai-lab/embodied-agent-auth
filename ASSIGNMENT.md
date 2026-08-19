@@ -84,14 +84,15 @@ export APPTAINERENV_ROS_DOMAIN_ID="$ROS_DOMAIN_ID"
 lab() { apptainer exec --pwd "$PWD" "$SIF" "$@"; }
 ```
 
-Confirm both `hostname` outputs match. Start the scenario in the first shell and
-capture its graph in the second before it exits:
+Confirm both `hostname` outputs match. Start the scenario in the first shell. And
+wait until the first shell outputs a message like `[lab] started ros_launch (pid XXX)`,
+then run the commands in the second shell to capture its graph before the first shell command exits:
 
 ```bash
 # First shell
 lab make baseline
 
-# Second shell
+# Second shell (after seeing [lab] started ros_launch ... in the first shell)
 lab ros2 node list > results/ros_graph_baseline.txt
 lab ros2 topic info -v /iscps_sst/distance >> results/ros_graph_baseline.txt
 ```
