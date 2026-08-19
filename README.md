@@ -58,15 +58,15 @@ sweep additionally creates `trials.csv` and `sweep.png`.
 ## Start in a private repository
 
 Create one **private** repository per group from this template, add only your
-partners, and clone that private copy:
+partners, clone that private copy, and update the SST submodule:
 
 ```bash
-git clone --recurse-submodules git@github.com:<OWNER>/<PRIVATE_REPOSITORY>.git
+git clone git@github.com:<OWNER>/<PRIVATE_REPOSITORY>.git
 cd <PRIVATE_REPOSITORY>
 git submodule update --init third_party/iotauth
 ```
 
-Do not publish course work in a public repository.
+Do not publish coursework in a public repository.
 
 ## Run on ASU Sol
 
@@ -144,6 +144,12 @@ lab make build
 lab make test-offline
 lab make vlm-check
 ```
+
+> Note and Troubleshooting: If you see `Live vision + structured-output check passed.`
+> at the end of the standard output, all checks are successful. However, if you see
+> a message like `ERROR [timeout]: Ollama did not answer within 90.0s`, that indicates
+> the last command, `lab make vlm-check`, was not successful, potentially due to a
+> transient error. We recommend running `lab make vlm-check` again after a while.
 
 ### 4. Run the experiments
 
