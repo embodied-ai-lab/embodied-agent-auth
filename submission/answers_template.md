@@ -80,9 +80,9 @@ observe?**
 
 ## 4. Authenticated inputs with SST (1.5 pt)
 
-Commands and secure run directory (`results/secure-...`):
-
 **4.1 Legitimate authentication:**
+
+Commands and secure run directory (`results/secure-...`):
 
 | input | authenticated | source entity | Auth group | evidence path and field |
 |---|---|---|---|---|
@@ -90,6 +90,8 @@ Commands and secure run directory (`results/secure-...`):
 | camera |  |  |  |  |
 
 **4.2 Rejection in `lab make secure-attack`:**
+
+Secure-attack run directory (`results/secure_attack-...`):
 
 | item | value | evidence path and field |
 |---|---|---|
@@ -99,8 +101,6 @@ Commands and secure run directory (`results/secure-...`):
 | recorded error |  |  |
 | `ever_authenticated` |  |  |
 | protected messages received |  |  |
-
-Secure-attack run directory (`results/secure_attack-...`):
 
 **4.3 Prove the rejected value never reached the model (`vlm_called` and
 latency).**
