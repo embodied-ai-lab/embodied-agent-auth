@@ -55,12 +55,13 @@ terminal, evaluation, and summary evidence. In particular,
 `summary.json` contain the independent post-run outcome. The reported-distance
 sweep additionally creates `trials.csv` and `sweep.png`.
 
-## Start in a private repository
+## Start in a private repository and clone it on ASU Sol
 
-Create one **private** repository per group from this template, add only your
-partners, clone that private copy, and update the SST submodule:
+Create one **private** repository per group from this template and add only your
+partners, then on ASU Sol, clone that private copy and update the SST submodule:
 
 ```bash
+cd /scratch/$USER
 git clone git@github.com:<OWNER>/<PRIVATE_REPOSITORY>.git
 cd <PRIVATE_REPOSITORY>
 git submodule update --init third_party/iotauth
