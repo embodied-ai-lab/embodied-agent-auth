@@ -42,6 +42,8 @@ used without DDS Security? Name the missing property.**
 
 ## 2. Unsafe embodied action (1 pt)
 
+**2.1, 2.2, and 2.3 Fill in answers and table cells below.**
+
 Command and run directory (`results/attack-...`):
 
 | reported distance | ground-truth distance | distance assessment | signal | path assessment | VLM action | action executed | reason | latency (ms) |
