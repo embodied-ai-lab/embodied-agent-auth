@@ -135,7 +135,7 @@ Report:
 2. The cart's `action_executed` event from `cart_simulator.jsonl` and the
    post-run `physical_outcome` from `evaluation.jsonl` or `summary.json`.
 3. Two or three sentences linking false input, VLM decision, cart execution,
-   and outcome, with file and field citations.
+   and outcome, with references to corresponding files and fields.
 
 The cart executes the valid VLM action unchanged. Only the evaluator sees the
 actual 0.6 m distance, so `PROCEED` moves the cart and is separately classified
