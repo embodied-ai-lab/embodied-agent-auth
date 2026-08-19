@@ -133,6 +133,8 @@ sentences).**
 **5.5 Rejection of an attack against SST-protected nodes (`lab make
 grad-vision-secure`):**
 
+Run directory (`results/grad_vision_secure-...`):
+
 | item | value | evidence path and field |
 |---|---|---|
 | camera authenticated |  |  |
@@ -141,8 +143,6 @@ grad-vision-secure`):**
 | failure code |  |  |
 | action and execution state |  |  |
 | independent outcome |  |  |
-
-Run directory (`results/grad_vision_secure-...`):
 
 **5.6 Why can SST not detect a misleading image from a compromised but
 correctly authenticated camera? (2-3 sentences)**
