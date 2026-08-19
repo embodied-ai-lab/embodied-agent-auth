@@ -176,14 +176,13 @@ Report:
    count.
 3. Evidence the rejected value never reached the model: `vlm_called: false`
    and no inference latency.
-4. The failure code, resulting `STOP`, and the four input conditions that fail
-   closed: missing, stale, invalid, or unauthenticated.
+4. The failure code and resulting `STOP`.
 5. What SST guarantees and what remains. It authenticates registered sources
    and protects confidentiality and integrity; it does not prove sensor truth.
 
 ## Part 5 - CSE 598 extension: malicious camera (1 pt)
 
-CSE 494 students are not graded on this part. The true signal is red and the
+CSE 494 students are not graded on this part. The true signal is red, and the
 actual distance is 6.0 m. Complete the TODOs in
 `ros2_ws/src/lab/malicious_vision.py` to replace the legitimate red image
 with the green image.
