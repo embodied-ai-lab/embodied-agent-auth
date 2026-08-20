@@ -94,7 +94,7 @@ lab make baseline
 
 # Second shell (after seeing [lab] started ros_launch ... in the first shell)
 lab ros2 node list > results/ros_graph_baseline.txt
-lab ros2 topic info -v /iscps_sst/distance >> results/ros_graph_baseline.txt
+lab ros2 topic info -v /embodied_ai/distance >> results/ros_graph_baseline.txt
 ```
 
 ## Part 1 - ROS 2 publisher impersonation (1 pt)
@@ -112,7 +112,7 @@ While it runs, use the attached shell:
 
 ```bash
 lab ros2 node list > results/ros_graph_attack.txt
-lab ros2 topic info -v /iscps_sst/distance >> results/ros_graph_attack.txt
+lab ros2 topic info -v /embodied_ai/distance >> results/ros_graph_attack.txt
 ```
 
 Report:

@@ -1,8 +1,8 @@
 schema: 2
 topics:
-  distance: /iscps_sst/distance
-  camera: /iscps_sst/camera/compressed
-  action: /iscps_sst/action
+  distance: /embodied_ai/distance
+  camera: /embodied_ai/camera/compressed
+  action: /embodied_ai/action
 
 # ROS discovery is intentionally visible but is not an authentication boundary.
 discovery:
