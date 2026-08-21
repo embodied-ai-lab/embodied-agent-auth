@@ -184,7 +184,7 @@ sbatch --export=ALL,RUN_GRAD_EXTENSION=1 slurm/run_experiments.sbatch
 
 Graph captures still require the interactive procedure.
 
-### 5. Submit before cleaning
+### 5. Clean-up process before submission
 
 ```bash
 lab make auth-stop
