@@ -144,7 +144,7 @@ mkdir -p "$(dirname "${LOG_FILE}")"
 # Auth exits when its interactive stdin reaches EOF. A FIFO keeps stdin open
 # and lets an instructor send `show re` or `show cp`.
 rm -f "${FIFO_FILE}"
-mkfifo -m 600 "${FIFO_FILE}"
+mkfifo "${FIFO_FILE}"
 exec 9<>"${FIFO_FILE}"
 
 log "properties: runtime/sst/auth/auth${AUTH_ID}.properties"
