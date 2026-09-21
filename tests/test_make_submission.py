@@ -259,6 +259,23 @@ def test_zip_name_carries_the_group_id(project):
     assert (project / "submission" / "groupteam-12_embodied-agent-auth.zip").is_file()
 
 
+def test_absolute_zip_path_is_supported(project, capsys):
+    (project / "submission" / "answers.md").write_text("# answers\n", encoding="utf-8")
+    destination = project.parent / "custom-submission.zip"
+    module = _load_builder(project)
+
+    assert _build(
+        module,
+        project,
+        "--groupid",
+        "07",
+        "--zip",
+        str(destination),
+    ) == 0
+    assert destination.is_file()
+    assert f"unzip -l {destination}" in capsys.readouterr().out
+
+
 def test_sweep_figure_is_rendered_from_the_summary(project):
     sweep = project / "results" / SWEEP_DIR
     with (sweep / "trials.csv").open(newline="", encoding="utf-8") as handle:

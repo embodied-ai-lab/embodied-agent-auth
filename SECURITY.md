@@ -33,6 +33,11 @@ not prove that an authenticated sensor is truthful, make VLM reasoning correct,
 detect misleading pixels from a compromised camera, protect a compromised
 host, or certify an action as safe.
 
+This SST topology protects only the two sensor-to-agent links. The VLM-to-cart
+action remains a plain ROS 2 topic; direct action injection and actuator
+authorization are outside the graded attack workflow and are not mitigated by
+SST in this lab.
+
 ## Runtime safeguards
 
 - Generated credentials, keys, databases, and configs stay under gitignored

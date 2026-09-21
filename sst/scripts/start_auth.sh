@@ -29,13 +29,13 @@ Usage: sst/scripts/start_auth.sh [options]
 
   --stop              Stop the Auth server started by a previous invocation.
   --status            Report whether Auth is running and listening.
-  --log FILE          Auth log file (default: runtime/sst/auth.log).
+  --log FILE          Auth log file (default: runtime/sst/logs/auth.log).
   --pid-file FILE     PID file (default: runtime/sst/auth.pid).
   --timeout SECONDS   How long to wait for readiness (default: 90).
   -h, --help          Show this help.
 
-Only the process recorded in the PID file is ever signaled. This script will
-not kill an Auth or Java process it did not start.
+Stop and status inspect only the PID file; they do not search by process name
+or port. Verify or remove a stale PID file before using --stop.
 USAGE
 }
 
@@ -132,8 +132,9 @@ rm -f "${PID_FILE}"
 
 if ! iscps_port_free "${AUTH_TCP_PORT}"; then
   die "port ${AUTH_TCP_PORT} is already in use. Another Auth may be running.
-This script will not kill a process it did not start. Stop it, or change
-authList[0].tcpPort in sst/configs/warehouse_cart.graph and re-run 'make generate'."
+This script will not select a process by port. Stop its owner, or change both
+authList[0].tcpPort in sst/configs/warehouse_cart.graph and auth.port in
+configs/sst.yaml, then re-run 'make generate'."
 fi
 
 AUTH_PASSWORD="$(tr -d '\r\n' < "${PASSWORD_FILE}")"
@@ -142,7 +143,7 @@ mkdir -p "$(dirname "${LOG_FILE}")"
 : > "${LOG_FILE}"
 
 # Auth exits when its interactive stdin reaches EOF. A FIFO keeps stdin open
-# and lets an instructor send `show re` or `show cp`.
+# and allows diagnostic commands such as `show re` or `show cp` to be sent.
 rm -f "${FIFO_FILE}"
 mkfifo "${FIFO_FILE}"
 exec 9<>"${FIFO_FILE}"

@@ -424,8 +424,12 @@ def main() -> int:
         print("Warnings:")
         for warning in warnings:
             print(f"  {warning}")
+    try:
+        display_zip = out_zip.relative_to(REPO).as_posix()
+    except ValueError:
+        display_zip = str(out_zip)
     print("\nInspect the archive before uploading it to Canvas:")
-    print(f"  unzip -l {out_zip.relative_to(REPO).as_posix()}")
+    print(f"  unzip -l {display_zip}")
     return 0
 
 

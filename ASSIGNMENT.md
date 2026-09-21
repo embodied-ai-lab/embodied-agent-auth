@@ -176,7 +176,8 @@ Report:
    count.
 3. Evidence the rejected value never reached the model: `vlm_called: false`
    and no inference latency.
-4. The failure code and resulting `STOP`.
+4. The failure code, resulting `STOP`, and the four input conditions that make
+   the agent fail closed: missing, stale, invalid, or unauthenticated.
 5. What SST guarantees and what remains. It authenticates registered sources
    and protects confidentiality and integrity; it does not prove sensor truth.
 
