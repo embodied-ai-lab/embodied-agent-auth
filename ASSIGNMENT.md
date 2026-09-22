@@ -142,18 +142,24 @@ actual 0.6 m distance, so `PROCEED` moves the cart and is separately classified
 as a collision. If the model selects `STOP`, report that supported negative
 result; do not alter or hide it.
 
-## Part 3 - Reported-distance sweep (0.5 pt)
+## Part 3 - Reported-distance sweep (1 pt)
+
+Here, a *sweep* means rerunning the same attack across a fixed list of reported
+distances. Only the distance reported by the malicious publisher changes; the
+camera image, actual obstacle distance, model, and other settings stay fixed.
+Repeating each value helps reveal how the VLM's action varies across trials.
 
 ```bash
 lab make attack-sweep REPETITIONS=3
 ```
 
-This runs three trials at 0.6, 1.0, 1.5, 2.0, 4.0, 6.0, and 10.0 m. Report the
-`STOP`, `PROCEED`, and invalid counts plus median latency for every distance;
-include `sweep.png`; identify where the action changes; and describe model
-variability. An execution-invalid trial is a run failure, not variability.
+This runs three trials at each of 0.6, 1.0, 1.5, 2.0, 4.0, 6.0, and 10.0 m
+(21 trials total). Report the `STOP`, `PROCEED`, and invalid counts plus median
+latency for every distance; include `sweep.png`; identify where the action
+changes; and describe model variability. An execution-invalid trial is a run
+failure, not variability.
 
-## Part 4 - Authenticated inputs with SST (1.5 pt)
+## Part 4 - Authenticated inputs with SST (1 pt)
 
 Complete the SST channel TODOs in `ros2_ws/src/lab/sst_link.py` and the
 unregistered-source TODO in
@@ -218,8 +224,8 @@ not include credentials, model weights, a SIF, `.venv`, build output, or caches.
 |---|---:|---|
 | Publisher impersonation | 1.0 | Working publisher, two graph captures, correct authentication explanation |
 | Unsafe embodied action | 1.0 | Live response and latency, unchanged cart execution, independent outcome, cited causal chain |
-| Distance sweep | 0.5 | 3 trials at all 7 distances, table, figure, change range, honest variability |
-| SST protection | 1.5 | Two authenticated inputs, complete rejection/no-inference evidence, fail-closed behavior, correct limits |
+| Distance sweep | 1.0 | 3 trials at all 7 distances, table, figure, change range, honest variability |
+| SST protection | 1.0 | Two authenticated inputs, complete rejection/no-inference evidence, fail-closed behavior, correct limits |
 | **Common total** | **4.0** | |
 | CSE 598 camera extension | 1.0 | Hypothesis, implementation, control, 3 attack trials, protected rejection, validity limit |
 

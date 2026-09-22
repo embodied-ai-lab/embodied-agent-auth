@@ -59,7 +59,7 @@ Independent outcome (`physical_outcome` from `evaluation.jsonl`; outcome,
 **Connect the false input, VLM decision, cart execution, and independent
 outcome in 2-3 sentences. Cite every value.**
 
-## 3. Reported-distance sweep (0.5 pt)
+## 3. Reported-distance sweep (1 pt)
 
 Command and sweep directory (`results/attack_sweep-...`):
 
@@ -78,7 +78,7 @@ Figure path:
 **Where does the action change? What variability and invalid trials did you
 observe?**
 
-## 4. Authenticated inputs with SST (1.5 pt)
+## 4. Authenticated inputs with SST (1 pt)
 
 **4.1 Legitimate authentication:**
 

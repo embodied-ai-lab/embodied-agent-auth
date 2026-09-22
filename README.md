@@ -8,6 +8,17 @@
 > If you have any questions about this project lab, please get in touch with the instructor,
 > [Hokeun Kim](https://hokeun.github.io/), via [hokeun@asu.edu](mailto:hokeun@asu.edu).
 
+This project studies source authentication in the control loop of an embodied
+AI agent. A plausible but falsified sensor report can change the agent's
+decision and lead to an unsafe physical action.
+
+You will use ROS 2 and the Secure Swarm Toolkit (SST) to trace sensor-impersonation
+attacks, measure their effect on a live model's decisions, and show how
+authenticated channels reject unregistered sources. The goal is to distinguish
+source authentication from sensor truth and action safety. Arizona State
+University (ASU)'s [Sol Supercomputer](https://docs.rc.asu.edu/) is the primary
+platform.
+
 A live `qwen2.5vl:3b` vision-language model receives a camera image, a mission,
 and a reported obstacle distance, then selects `STOP` or `PROCEED` for a
 simulated warehouse cart. You will impersonate ROS 2 sensor publishers and use
@@ -62,6 +73,12 @@ terminal, evaluation, and summary evidence. In particular,
 `cart_simulator.jsonl` records only execution, while `evaluation.jsonl` and
 `summary.json` contain the independent post-run outcome. The reported-distance
 sweep additionally creates `trials.csv` and `sweep.png`.
+
+A reported-distance *sweep* repeats the same attack at a fixed list of sensor
+readings, changing only the distance reported by the malicious publisher.
+The camera, actual obstacle distance, model, and other settings stay fixed.
+Seven distances with three repetitions each give 21 trials for comparing the
+VLM's actions and variability.
 
 ## Start in a private repository and clone it on ASU Sol
 
