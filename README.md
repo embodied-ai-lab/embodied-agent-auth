@@ -1,5 +1,13 @@
 # Embodied AI Lab: Securing an Embodied Agent with Authentication
 
+> This template repository is designed as a project lab for the combined course of
+> [CSE 494](https://catalog.apps.asu.edu/catalog/classes/classlist?keywords=85268&searchType=all&term=2267#detailsOpen=85268-104231)
+> and [CSE 598](https://catalog.apps.asu.edu/catalog/classes/classlist?keywords=87933&searchType=all&term=2267#detailsOpen=87933-104278),
+> "Topic: Intelligent and Safe Cyber-Physical Systems" (ISCPS in short),
+> at Arizona State University (ASU) in Fall 2026.
+> If you have any questions about this project lab, please get in touch with the instructor,
+> [Hokeun Kim](https://hokeun.github.io/), via [hokeun@asu.edu](mailto:hokeun@asu.edu).
+
 A live `qwen2.5vl:3b` vision-language model receives a camera image, a mission,
 and a reported obstacle distance, then selects `STOP` or `PROCEED` for a
 simulated warehouse cart. You will impersonate ROS 2 sensor publishers and use
