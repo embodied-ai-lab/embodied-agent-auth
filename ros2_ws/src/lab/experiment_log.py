@@ -11,7 +11,7 @@ from typing import Any
 
 class ExperimentLog:
     def __init__(self, role: str) -> None:
-        root = Path(os.environ.get("ISCPS_RUN_DIR", "results/manual")).resolve()
+        root = Path(os.environ.get("LAB_RUN_DIR", "results/manual")).resolve()
         root.mkdir(parents=True, exist_ok=True)
         self.path = root / f"{role}.jsonl"
         self.role = role

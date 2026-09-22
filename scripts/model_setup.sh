@@ -3,7 +3,7 @@
 
 set -euo pipefail
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
-iscps_refuse_login_node
+lab_refuse_login_node
 need_cmd ollama
 MODEL="${VLM_MODEL:-qwen2.5vl:3b}"
 log_step "One-time Ollama model setup: ${MODEL}"

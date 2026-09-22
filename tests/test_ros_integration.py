@@ -23,8 +23,8 @@ def test_unified_launch_description_constructs(repo_root):
 
 
 def run_live_scenario(repo_root: Path, mode: str) -> Path:
-    if os.environ.get("ISCPS_RUN_ROS_SCENARIOS") != "1":
-        pytest.skip("set ISCPS_RUN_ROS_SCENARIOS=1 with ROS and live Ollama ready")
+    if os.environ.get("LAB_RUN_ROS_SCENARIOS") != "1":
+        pytest.skip("set LAB_RUN_ROS_SCENARIOS=1 with ROS and live Ollama ready")
     result = subprocess.run(
         [str(repo_root / "scripts/run_scenario.sh"), mode],
         cwd=repo_root,

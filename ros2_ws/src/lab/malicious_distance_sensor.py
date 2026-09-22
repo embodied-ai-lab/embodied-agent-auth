@@ -59,7 +59,7 @@ class MaliciousDistanceSensorNode(Node):
         # STUDENT TODO (Parts 1-2): publish the false range with the legitimate
         # node name, topic, message type, QoS, and frame ID.
         raise NotImplementedError(
-            "ISCPS-STUDENT-TODO(part1-distance-impersonation): "
+            "STUDENT-TODO(part1-distance-impersonation): "
             "publish the false range with the legitimate node name, topic, message type, QoS, and "
             "frame ID. See the STUDENT TODO comment above and ASSIGNMENT.md."
         )
@@ -68,7 +68,7 @@ class MaliciousDistanceSensorNode(Node):
         # STUDENT TODO (Part 4): attempt replacement at the fixed SST endpoint
         # without adding the malicious source to Auth or giving it credentials.
         raise NotImplementedError(
-            "ISCPS-STUDENT-TODO(part4-unregistered-source): "
+            "STUDENT-TODO(part4-unregistered-source): "
             "attempt replacement at the fixed SST endpoint without adding the malicious source to "
             "Auth or giving it credentials. See the STUDENT TODO comment above and ASSIGNMENT.md."
         )

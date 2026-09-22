@@ -11,7 +11,7 @@ import yaml
 
 
 def repository_root() -> Path:
-    configured = os.environ.get("ISCPS_LAB_ROOT")
+    configured = os.environ.get("LAB_ROOT")
     if configured:
         return Path(configured).resolve()
 
@@ -25,7 +25,7 @@ def repository_root() -> Path:
                 return candidate
     raise RuntimeError(
         "cannot locate the lab repository; run from its root or set "
-        "ISCPS_LAB_ROOT"
+        "LAB_ROOT"
     )
 
 

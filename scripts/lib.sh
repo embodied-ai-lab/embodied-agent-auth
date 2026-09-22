@@ -4,14 +4,14 @@
 
 # shellcheck shell=bash
 
-if [[ -n "${_ISCPS_LIB_SOURCED:-}" ]]; then
+if [[ -n "${_LAB_LIB_SOURCED:-}" ]]; then
   return 0
 fi
-_ISCPS_LIB_SOURCED=1
+_LAB_LIB_SOURCED=1
 
 # Repository root
 
-iscps_find_root() {
+lab_find_root() {
   local dir="${BASH_SOURCE[0]%/*}"
   dir="$(cd "${dir}/.." && pwd)"
   while [[ "${dir}" != "/" ]]; do
@@ -25,14 +25,14 @@ iscps_find_root() {
   return 1
 }
 
-ISCPS_LAB_ROOT="${ISCPS_LAB_ROOT:-$(iscps_find_root)}"
-export ISCPS_LAB_ROOT
-readonly ISCPS_LAB_ROOT
+LAB_ROOT="${LAB_ROOT:-$(lab_find_root)}"
+export LAB_ROOT
+readonly LAB_ROOT
 
-ISCPS_PKG_DIR="${ISCPS_LAB_ROOT}/ros2_ws/src/lab"
-ISCPS_RUNTIME_DIR="${ISCPS_LAB_ROOT}/runtime"
-ISCPS_IOTAUTH_DIR="${ISCPS_LAB_ROOT}/third_party/iotauth"
-export ISCPS_PKG_DIR ISCPS_RUNTIME_DIR ISCPS_IOTAUTH_DIR
+LAB_PKG_DIR="${LAB_ROOT}/ros2_ws/src/lab"
+LAB_RUNTIME_DIR="${LAB_ROOT}/runtime"
+LAB_IOTAUTH_DIR="${LAB_ROOT}/third_party/iotauth"
+export LAB_PKG_DIR LAB_RUNTIME_DIR LAB_IOTAUTH_DIR
 
 # Logging
 
@@ -60,11 +60,11 @@ need_cmd() {
 # is the default. A virtual environment is only used when it was created with
 # --system-site-packages, otherwise `import rclpy` would fail inside it.
 
-iscps_python() {
-  if [[ -n "${ISCPS_PYTHON:-}" ]]; then
-    printf '%s\n' "${ISCPS_PYTHON}"
-  elif [[ -x "${ISCPS_LAB_ROOT}/.venv/bin/python3" ]]; then
-    printf '%s\n' "${ISCPS_LAB_ROOT}/.venv/bin/python3"
+lab_python() {
+  if [[ -n "${LAB_PYTHON:-}" ]]; then
+    printf '%s\n' "${LAB_PYTHON}"
+  elif [[ -x "${LAB_ROOT}/.venv/bin/python3" ]]; then
+    printf '%s\n' "${LAB_ROOT}/.venv/bin/python3"
   elif [[ -x /usr/bin/python3 ]]; then
     printf '%s\n' /usr/bin/python3
   else
@@ -72,13 +72,13 @@ iscps_python() {
   fi
 }
 
-PY="$(iscps_python)"
+PY="$(lab_python)"
 export PY
-if [[ "${PY}" == "${ISCPS_LAB_ROOT}/.venv/"* ]]; then
-  export PATH="${ISCPS_LAB_ROOT}/.venv/bin:${PATH}"
+if [[ "${PY}" == "${LAB_ROOT}/.venv/"* ]]; then
+  export PATH="${LAB_ROOT}/.venv/bin:${PATH}"
 fi
 
-iscps_refuse_login_node() {
+lab_refuse_login_node() {
   local host
   host="$(hostname -s 2>/dev/null || hostname)"
   if [[ "${host}" =~ (^|-)login[0-9]*($|-) ]] || [[ "${host}" =~ ^sol-login ]]; then
@@ -94,9 +94,9 @@ iscps_refuse_login_node() {
 # A domain ID is NOT an authentication boundary. Anyone who can run a process
 # on this machine can join this domain. That is the premise of Parts 1-3.
 
-iscps_setup_domain() {
+lab_setup_domain() {
   if [[ -z "${ROS_DOMAIN_ID:-}" ]]; then
-    ROS_DOMAIN_ID="$("${PY}" "${ISCPS_LAB_ROOT}/scripts/choose_domain_id.py" --quiet)" \
+    ROS_DOMAIN_ID="$("${PY}" "${LAB_ROOT}/scripts/choose_domain_id.py" --quiet)" \
       || die "could not select a ROS domain ID"
   fi
   export ROS_DOMAIN_ID
@@ -106,24 +106,24 @@ iscps_setup_domain() {
   log "RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-<default>}"
 }
 
-iscps_source_ros() {
+lab_source_ros() {
   if [[ -n "${ROS_DISTRO:-}" ]]; then
     return 0
   fi
-  local candidate="/opt/ros/${ISCPS_ROS_DISTRO:-jazzy}/setup.bash"
+  local candidate="/opt/ros/${LAB_ROS_DISTRO:-jazzy}/setup.bash"
   if [[ -f "${candidate}" ]]; then
     # shellcheck disable=SC1090
     set +u; . "${candidate}"; set -u
     log "sourced ${candidate}"
   else
     log_warn "ROS 2 environment not found at ${candidate}; ROS nodes will not run."
-    log_warn "Install ROS 2 Jazzy or set ISCPS_ROS_DISTRO. See README.md."
+    log_warn "Install ROS 2 Jazzy or set LAB_ROS_DISTRO. See README.md."
     return 1
   fi
 }
 
-iscps_source_overlay() {
-  local overlay="${ISCPS_LAB_ROOT}/ros2_ws/install/setup.bash"
+lab_source_overlay() {
+  local overlay="${LAB_ROOT}/ros2_ws/install/setup.bash"
   if [[ -f "${overlay}" ]]; then
     # shellcheck disable=SC1090
     set +u; . "${overlay}"; set -u
@@ -136,80 +136,80 @@ iscps_source_overlay() {
 
 # Run directories
 
-iscps_new_run_dir() {
+lab_new_run_dir() {
   local mode="$1"
   local stamp run_id dir
   stamp="$(date -u +%Y%m%dT%H%M%SZ)"
   run_id="$(od -An -N4 -tx1 /dev/urandom | tr -d ' \n')"
-  dir="${ISCPS_LAB_ROOT}/results/${mode}-${stamp}-${run_id}"
-  mkdir -p "${ISCPS_RUNTIME_DIR}" "${dir}"
+  dir="${LAB_ROOT}/results/${mode}-${stamp}-${run_id}"
+  mkdir -p "${LAB_RUNTIME_DIR}" "${dir}"
   printf '%s\n' "${dir}"
 }
 
 # Run-scoped process registry
-# Every child we start is recorded in ${ISCPS_PID_DIR}. Commands launched with
-# iscps_spawn get a fresh session/process group. On exit we signal only that
+# Every child we start is recorded in ${LAB_PID_DIR}. Commands launched with
+# lab_spawn get a fresh session/process group. On exit we signal only that
 # recorded group, so grandchildren such as the nodes created by `ros2 launch`
 # cannot survive while unrelated jobs remain untouched.
 
-iscps_init_pids() {
-  ISCPS_PID_DIR="${1:-${ISCPS_RUNTIME_DIR}/pids/$$}"
-  mkdir -p "${ISCPS_PID_DIR}"
-  export ISCPS_PID_DIR
-  trap iscps_cleanup EXIT INT TERM
+lab_init_pids() {
+  LAB_PID_DIR="${1:-${LAB_RUNTIME_DIR}/pids/$$}"
+  mkdir -p "${LAB_PID_DIR}"
+  export LAB_PID_DIR
+  trap lab_cleanup EXIT INT TERM
 }
 
-# iscps_track <label> <pid> [group]
-iscps_track() {
+# lab_track <label> <pid> [group]
+lab_track() {
   local label="$1" pid="$2" scope="${3:-process}"
-  printf '%s\n' "${pid}" > "${ISCPS_PID_DIR}/${label}.pid"
+  printf '%s\n' "${pid}" > "${LAB_PID_DIR}/${label}.pid"
   if [[ "${scope}" == "group" ]]; then
-    : > "${ISCPS_PID_DIR}/${label}.group"
+    : > "${LAB_PID_DIR}/${label}.group"
   fi
   log "started ${label} (pid ${pid})"
 }
 
-# iscps_spawn <label> <logfile> -- <command...>
-iscps_spawn() {
+# lab_spawn <label> <logfile> -- <command...>
+lab_spawn() {
   local label="$1" logfile="$2"
   shift 2
   [[ "$1" == "--" ]] && shift
   need_cmd setsid
   mkdir -p "$(dirname "${logfile}")"
   setsid "$@" >>"${logfile}" 2>&1 &
-  iscps_track "${label}" "$!" group
+  lab_track "${label}" "$!" group
 }
 
-iscps_pid_of() {
-  local label="$1" file="${ISCPS_PID_DIR}/${label}.pid"
+lab_pid_of() {
+  local label="$1" file="${LAB_PID_DIR}/${label}.pid"
   [[ -f "${file}" ]] && cat "${file}"
 }
 
-iscps_is_alive() {
+lab_is_alive() {
   local pid="$1"
   [[ -n "${pid}" ]] && kill -0 "${pid}" 2>/dev/null
 }
 
-iscps_group_is_alive() {
+lab_group_is_alive() {
   local pgid="$1"
   [[ -n "${pgid}" ]] && kill -0 -- "-${pgid}" 2>/dev/null
 }
 
-# iscps_stop <label> [signal] -- graceful TERM, then KILL after a grace period.
-iscps_stop() {
+# lab_stop <label> [signal] -- graceful TERM, then KILL after a grace period.
+lab_stop() {
   local label="$1" sig="${2:-TERM}" pid group_file target
-  pid="$(iscps_pid_of "${label}" || true)"
-  group_file="${ISCPS_PID_DIR}/${label}.group"
+  pid="$(lab_pid_of "${label}" || true)"
+  group_file="${LAB_PID_DIR}/${label}.group"
   if [[ -f "${group_file}" ]]; then
     target="-${pid}"
-    if ! iscps_group_is_alive "${pid}"; then
-      rm -f "${ISCPS_PID_DIR}/${label}.pid" "${group_file}"
+    if ! lab_group_is_alive "${pid}"; then
+      rm -f "${LAB_PID_DIR}/${label}.pid" "${group_file}"
       return 0
     fi
   else
     target="${pid}"
-    if ! iscps_is_alive "${pid}"; then
-      rm -f "${ISCPS_PID_DIR}/${label}.pid"
+    if ! lab_is_alive "${pid}"; then
+      rm -f "${LAB_PID_DIR}/${label}.pid"
       return 0
     fi
   fi
@@ -223,40 +223,40 @@ iscps_stop() {
   fi
   kill -"${sig}" -- "${target}" 2>/dev/null || true
   local waited=0
-  while { [[ -f "${group_file}" ]] && iscps_group_is_alive "${pid}"; } \
-    || { [[ ! -f "${group_file}" ]] && iscps_is_alive "${pid}"; }; do
+  while { [[ -f "${group_file}" ]] && lab_group_is_alive "${pid}"; } \
+    || { [[ ! -f "${group_file}" ]] && lab_is_alive "${pid}"; }; do
     (( waited >= 50 )) && break
     sleep 0.1
     waited=$(( waited + 1 ))
   done
-  if { [[ -f "${group_file}" ]] && iscps_group_is_alive "${pid}"; } \
-    || { [[ ! -f "${group_file}" ]] && iscps_is_alive "${pid}"; }; then
+  if { [[ -f "${group_file}" ]] && lab_group_is_alive "${pid}"; } \
+    || { [[ ! -f "${group_file}" ]] && lab_is_alive "${pid}"; }; then
     log_warn "${label} did not exit on SIG${sig}; sending SIGKILL"
     kill -KILL -- "${target}" 2>/dev/null || true
   fi
   wait "${pid}" 2>/dev/null || true
-  rm -f "${ISCPS_PID_DIR}/${label}.pid" "${group_file}"
+  rm -f "${LAB_PID_DIR}/${label}.pid" "${group_file}"
 }
 
-iscps_cleanup() {
+lab_cleanup() {
   local status=$?
   trap - EXIT INT TERM
-  if [[ -n "${ISCPS_PID_DIR:-}" ]] && [[ -d "${ISCPS_PID_DIR}" ]]; then
+  if [[ -n "${LAB_PID_DIR:-}" ]] && [[ -d "${LAB_PID_DIR}" ]]; then
     local file label
     # Reverse order so clients die before the servers they talk to.
     while IFS= read -r file; do
       label="$(basename "${file}" .pid)"
-      iscps_stop "${label}" TERM
-    done < <(ls -1t "${ISCPS_PID_DIR}"/*.pid 2>/dev/null || true)
-    rmdir "${ISCPS_PID_DIR}" 2>/dev/null || true
+      lab_stop "${label}" TERM
+    done < <(ls -1t "${LAB_PID_DIR}"/*.pid 2>/dev/null || true)
+    rmdir "${LAB_PID_DIR}" 2>/dev/null || true
   fi
   return "${status}"
 }
 
 # Waiting helpers
 
-# iscps_wait_for_port <host> <port> <timeout_s> <label>
-iscps_wait_for_port() {
+# lab_wait_for_port <host> <port> <timeout_s> <label>
+lab_wait_for_port() {
   local host="$1" port="$2" timeout="$3" label="${4:-${1}:${2}}"
   local deadline=$(( SECONDS + timeout ))
   while (( SECONDS < deadline )); do
@@ -276,8 +276,8 @@ EOF
   return 1
 }
 
-# iscps_wait_for_log <file> <pattern> <timeout_s> <label>
-iscps_wait_for_log() {
+# lab_wait_for_log <file> <pattern> <timeout_s> <label>
+lab_wait_for_log() {
   local file="$1" pattern="$2" timeout="$3" label="${4:-$2}"
   local deadline=$(( SECONDS + timeout ))
   while (( SECONDS < deadline )); do
@@ -292,8 +292,8 @@ iscps_wait_for_log() {
   return 1
 }
 
-# iscps_port_free <port> -- true when nothing is listening.
-iscps_port_free() {
+# lab_port_free <port> -- true when nothing is listening.
+lab_port_free() {
   ! "${PY}" - "$1" <<'EOF' 2>/dev/null
 import socket, sys
 s = socket.socket()
@@ -302,13 +302,13 @@ sys.exit(0 if s.connect_ex(("127.0.0.1", int(sys.argv[1]))) == 0 else 1)
 EOF
 }
 
-# iscps_require_ports_free <port...> -- refuse to start on top of something else.
+# lab_require_ports_free <port...> -- refuse to start on top of something else.
 # We report the conflict and exit; we never kill the other process, because on a
 # shared machine it belongs to somebody else.
-iscps_require_ports_free() {
+lab_require_ports_free() {
   local port conflicts=()
   for port in "$@"; do
-    iscps_port_free "${port}" || conflicts+=("${port}")
+    lab_port_free "${port}" || conflicts+=("${port}")
   done
   if (( ${#conflicts[@]} > 0 )); then
     log_err "these lab ports are already in use: ${conflicts[*]}"
@@ -319,10 +319,10 @@ iscps_require_ports_free() {
   return 0
 }
 
-iscps_banner() {
+lab_banner() {
   local mode="$1" outdir="$2"
-  log_step "ISCPS embodied-agent-auth -- mode: ${mode}"
-  log "project root:     ${ISCPS_LAB_ROOT}"
+  log_step "embodied-agent-auth -- mode: ${mode}"
+  log "project root:     ${LAB_ROOT}"
   log "output directory: ${outdir}"
   log "python:           ${PY}"
 }

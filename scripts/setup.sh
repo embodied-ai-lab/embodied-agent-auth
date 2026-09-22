@@ -4,13 +4,13 @@
 set -euo pipefail
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 
-[[ -f "${ISCPS_IOTAUTH_DIR}/entity/python/pyproject.toml" ]] \
+[[ -f "${LAB_IOTAUTH_DIR}/entity/python/pyproject.toml" ]] \
   || die "iotauth submodule is not initialized. Run: make submodules"
 
-iscps_source_ros \
+lab_source_ros \
   || die "ROS 2 Jazzy must be installed and sourced before creating the lab venv"
 
-if [[ ! -x "${ISCPS_LAB_ROOT}/.venv/bin/python3" ]]; then
+if [[ ! -x "${LAB_ROOT}/.venv/bin/python3" ]]; then
   setup_python=""
   candidates=(/usr/bin/python3)
   for name in python3.12 python3.11 python3.10 python3; do
@@ -34,10 +34,10 @@ if [[ ! -x "${ISCPS_LAB_ROOT}/.venv/bin/python3" ]]; then
 ROS 2 Jazzy binary packages must be used with their matching system Python.
 Verify first with: /usr/bin/python3 -c 'import rclpy'"
   log "creating .venv with ROS-compatible interpreter: ${setup_python}"
-  "${setup_python}" -m venv --system-site-packages "${ISCPS_LAB_ROOT}/.venv"
+  "${setup_python}" -m venv --system-site-packages "${LAB_ROOT}/.venv"
 fi
 
-VENV_PY="${ISCPS_LAB_ROOT}/.venv/bin/python3"
+VENV_PY="${LAB_ROOT}/.venv/bin/python3"
 "${VENV_PY}" -c 'import rclpy' \
   || die \
     "The existing .venv cannot import rclpy. It was likely created with a
@@ -45,7 +45,7 @@ different Python ABI or without --system-site-packages. Remove only this
 repository's .venv, then rerun make setup."
 "${VENV_PY}" -m pip install \
   "pydantic>=2" Pillow PyYAML pytest pytest-timeout ruff
-"${VENV_PY}" -m pip install "${ISCPS_IOTAUTH_DIR}/entity/python"
+"${VENV_PY}" -m pip install "${LAB_IOTAUTH_DIR}/entity/python"
 
 log_ok "Python environment ready at .venv"
 "${VENV_PY}" -c 'import rclpy; print("ROS rclpy import: OK")'

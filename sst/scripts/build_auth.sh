@@ -7,7 +7,7 @@ set -euo pipefail
 # shellcheck source=../../scripts/lib.sh
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../scripts" && pwd)/lib.sh"
 
-AUTH_DIR="${ISCPS_IOTAUTH_DIR}/auth"
+AUTH_DIR="${LAB_IOTAUTH_DIR}/auth"
 JAR="${AUTH_DIR}/auth-server/target/auth-server-jar-with-dependencies.jar"
 FORCE=0
 OFFLINE=0
@@ -55,7 +55,7 @@ fi
 MVN_ARGS=(-B -q package -DskipTests)
 (( OFFLINE )) && MVN_ARGS+=(-o)
 
-BUILD_LOG="${ISCPS_RUNTIME_DIR}/sst/logs/build_auth.log"
+BUILD_LOG="${LAB_RUNTIME_DIR}/sst/logs/build_auth.log"
 mkdir -p "$(dirname "${BUILD_LOG}")"
 
 log "running: mvn ${MVN_ARGS[*]} --file auth/pom.xml"

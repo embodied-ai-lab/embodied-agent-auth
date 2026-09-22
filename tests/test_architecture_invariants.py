@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import json
 import os
 import subprocess
 
@@ -59,7 +60,7 @@ def test_cart_is_ground_truth_free_and_evaluation_is_offline(repo_root):
     assert "load_truth" in evaluator
     assert 'configs" / "ground_truth.yaml"' in evaluator
     assert '"kind": "physical_outcome"' in evaluator
-    assert runner.index("iscps_stop ros_launch") < runner.index("evaluate_run.py")
+    assert runner.index("lab_stop ros_launch") < runner.index("evaluate_run.py")
 
     scenario = (repo_root / "configs/scenario.yaml").read_text(encoding="utf-8")
     truth = (repo_root / "configs/ground_truth.yaml").read_text(encoding="utf-8")
@@ -82,14 +83,35 @@ def test_new_run_dir_initializes_runtime_directory(repo_root, tmp_path):
             """
 set -euo pipefail
 . "${REPO_ROOT}/scripts/lib.sh"
-iscps_new_run_dir smoke >/dev/null
-test -d "${ISCPS_RUNTIME_DIR}"
+lab_new_run_dir smoke >/dev/null
+test -d "${LAB_RUNTIME_DIR}"
 """,
         ],
         check=True,
         env={
             **os.environ,
-            "ISCPS_LAB_ROOT": str(tmp_path),
+            "LAB_ROOT": str(tmp_path),
             "REPO_ROOT": str(repo_root),
         },
     )
+
+
+def test_repository_root_uses_lab_root(monkeypatch, tmp_path):
+    from lab.scenario import repository_root
+
+    monkeypatch.setenv("LAB_ROOT", str(tmp_path))
+    assert repository_root() == tmp_path.resolve()
+
+
+def test_experiment_log_uses_lab_run_dir(repo_root, monkeypatch, tmp_path):
+    from lab.experiment_log import ExperimentLog
+
+    run_dir = tmp_path / "run"
+    monkeypatch.setenv("LAB_RUN_DIR", str(run_dir))
+    log = ExperimentLog("sensor")
+    log.write("smoke", value=1)
+    assert log.path == run_dir / "sensor.jsonl"
+    assert json.loads(log.path.read_text())["value"] == 1
+
+    runner = (repo_root / "scripts/run_scenario.sh").read_text()
+    assert 'export LAB_RUN_DIR="${RUN_DIR}"' in runner

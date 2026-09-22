@@ -206,7 +206,7 @@ Graph captures still require the interactive procedure.
 #### Expected failures before completing the TODOs
 
 Running an unfinished mode can raise
-`NotImplementedError: ISCPS-STUDENT-TODO(...)` in
+`NotImplementedError: STUDENT-TODO(...)` in
 `results/<run>/terminal.log`. A crashed publisher or SST worker leaves the
 agent without input, so it selects `STOP` without calling the model. This is
 expected for unfinished template code, but it is an invalid experiment.

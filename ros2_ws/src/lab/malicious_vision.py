@@ -58,7 +58,7 @@ class MaliciousVisionNode(Node):
         # STUDENT TODO (CSE 598): replace the legitimate image while matching
         # its ROS-facing node name, topic, message type, QoS, and frame ID.
         raise NotImplementedError(
-            "ISCPS-STUDENT-TODO(grad-vision-impersonation): "
+            "STUDENT-TODO(grad-vision-impersonation): "
             "replace the legitimate image while matching its ROS-facing node name, topic, message "
             "type, QoS, and frame ID. See the STUDENT TODO comment above and ASSIGNMENT.md."
         )
@@ -67,7 +67,7 @@ class MaliciousVisionNode(Node):
         # STUDENT TODO (CSE 598): attempt to send the fake image at the fixed
         # vision endpoint without registering the attacker with Auth.
         raise NotImplementedError(
-            "ISCPS-STUDENT-TODO(grad-vision-sst-rejection): "
+            "STUDENT-TODO(grad-vision-sst-rejection): "
             "attempt to send the fake image at the fixed vision endpoint without registering the "
             "attacker with Auth. See the STUDENT TODO comment above and ASSIGNMENT.md."
         )

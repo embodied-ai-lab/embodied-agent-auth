@@ -10,7 +10,7 @@ import rclpy
 
 def main() -> int:
     rclpy.init()
-    probe = rclpy.create_node("iscps_cleanup_probe")
+    probe = rclpy.create_node("lab_cleanup_probe")
     try:
         # Allow discovery to settle without starting the ros2cli daemon.
         deadline = time.monotonic() + 2.0

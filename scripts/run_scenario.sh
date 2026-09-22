@@ -23,31 +23,31 @@ case "${MODE}" in
   *) die "usage: scripts/run_scenario.sh {baseline|attack|secure|secure-attack|grad-vision-baseline|grad-vision-attack|grad-vision-secure}" ;;
 esac
 
-iscps_refuse_login_node
-iscps_source_ros || exit 1
-iscps_source_overlay || exit 1
-iscps_setup_domain
+lab_refuse_login_node
+lab_source_ros || exit 1
+lab_source_overlay || exit 1
+lab_setup_domain
 LIVE_VLM_REQUIRED=1
 if [[ "${MODE}" == secure-attack || "${MODE}" == grad-vision-secure ]]; then
   LIVE_VLM_REQUIRED=0
 else
-  "${PY}" "${ISCPS_LAB_ROOT}/scripts/vlm_check.py" --quick
+  "${PY}" "${LAB_ROOT}/scripts/vlm_check.py" --quick
 fi
 
-RUN_DIR="$(iscps_new_run_dir "${MODE//-/_}")"
-export ISCPS_RUN_DIR="${RUN_DIR}"
-printf '%s\n' "${RUN_DIR}" > "${ISCPS_RUNTIME_DIR}/last_run"
-mkdir -p "${ISCPS_RUNTIME_DIR}/pids/$$"
-ISCPS_PID_DIR="${ISCPS_RUNTIME_DIR}/pids/$$"
-export ISCPS_PID_DIR
+RUN_DIR="$(lab_new_run_dir "${MODE//-/_}")"
+export LAB_RUN_DIR="${RUN_DIR}"
+printf '%s\n' "${RUN_DIR}" > "${LAB_RUNTIME_DIR}/last_run"
+mkdir -p "${LAB_RUNTIME_DIR}/pids/$$"
+LAB_PID_DIR="${LAB_RUNTIME_DIR}/pids/$$"
+export LAB_PID_DIR
 AUTH_STARTED=0
 
 finish() {
   local status=$?
   trap - EXIT INT TERM
-  iscps_cleanup || true
+  lab_cleanup || true
   if (( AUTH_STARTED )); then
-    "${ISCPS_LAB_ROOT}/sst/scripts/start_auth.sh" --stop || true
+    "${LAB_ROOT}/sst/scripts/start_auth.sh" --stop || true
   fi
   exit "${status}"
 }
@@ -76,22 +76,22 @@ PY
 
 if [[ "${MODE}" == secure || "${MODE}" == secure-attack \
   || "${MODE}" == grad-vision-secure ]]; then
-  if ! "${ISCPS_LAB_ROOT}/sst/scripts/start_auth.sh" --status >/dev/null 2>&1; then
-    "${ISCPS_LAB_ROOT}/sst/scripts/start_auth.sh"
+  if ! "${LAB_ROOT}/sst/scripts/start_auth.sh" --status >/dev/null 2>&1; then
+    "${LAB_ROOT}/sst/scripts/start_auth.sh"
     AUTH_STARTED=1
   fi
 fi
 
-iscps_banner "${MODE}" "${RUN_DIR}"
-iscps_spawn ros_launch "${RUN_DIR}/terminal.log" -- \
+lab_banner "${MODE}" "${RUN_DIR}"
+lab_spawn ros_launch "${RUN_DIR}/terminal.log" -- \
   ros2 launch lab lab.launch.py \
     "mode:=${MODE}" "false_distance:=${FALSE_DISTANCE}"
 
-if ! iscps_wait_for_log \
+if ! lab_wait_for_log \
   "${RUN_DIR}/cart_simulator.jsonl" '"kind": "action_executed"' \
   "${DURATION}" "executed cart action"; then
   exit 2
 fi
-iscps_stop ros_launch
+lab_stop ros_launch
 # Ground truth is loaded only now, after ROS and the cart have stopped.
-"${PY}" "${ISCPS_LAB_ROOT}/scripts/evaluate_run.py" --run-dir "${RUN_DIR}"
+"${PY}" "${LAB_ROOT}/scripts/evaluate_run.py" --run-dir "${RUN_DIR}"

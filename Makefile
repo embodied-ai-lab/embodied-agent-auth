@@ -1,4 +1,4 @@
-# ISCPS Project: Securing Multimodal Perception for a ROS 2 VLM-Based Embodied Agent
+# Embodied AI Lab: Securing an Embodied Agent with Authentication
 
 SHELL := /bin/bash
 ROOT := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
@@ -7,7 +7,7 @@ FALSE_DISTANCE ?= 6.0
 REPETITIONS ?= 3
 GROUPID ?=
 
-export ISCPS_LAB_ROOT := $(ROOT)
+export LAB_ROOT := $(ROOT)
 
 .DEFAULT_GOAL := help
 

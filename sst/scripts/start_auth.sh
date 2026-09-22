@@ -12,14 +12,14 @@ set -euo pipefail
 # shellcheck source=../../scripts/lib.sh
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../scripts" && pwd)/lib.sh"
 
-AUTH_SERVER_DIR="${ISCPS_IOTAUTH_DIR}/auth/auth-server"
+AUTH_SERVER_DIR="${LAB_IOTAUTH_DIR}/auth/auth-server"
 JAR="${AUTH_SERVER_DIR}/target/auth-server-jar-with-dependencies.jar"
-PASSWORD_FILE="${ISCPS_RUNTIME_DIR}/sst/auth_password"
-GRAPH="${ISCPS_LAB_ROOT}/sst/configs/warehouse_cart.graph"
+PASSWORD_FILE="${LAB_RUNTIME_DIR}/sst/auth_password"
+GRAPH="${LAB_ROOT}/sst/configs/warehouse_cart.graph"
 
-LOG_FILE="${ISCPS_RUNTIME_DIR}/sst/logs/auth.log"
-PID_FILE="${ISCPS_RUNTIME_DIR}/sst/auth.pid"
-FIFO_FILE="${ISCPS_RUNTIME_DIR}/sst/auth.stdin"
+LOG_FILE="${LAB_RUNTIME_DIR}/sst/logs/auth.log"
+PID_FILE="${LAB_RUNTIME_DIR}/sst/auth.pid"
+FIFO_FILE="${LAB_RUNTIME_DIR}/sst/auth.stdin"
 TIMEOUT=90
 ACTION=start
 
@@ -63,7 +63,7 @@ EOF
 
 AUTH_ID="$(read_graph id)"
 AUTH_TCP_PORT="$(read_graph tcpPort)"
-PROPERTIES="${ISCPS_RUNTIME_DIR}/sst/auth/auth${AUTH_ID}.properties"
+PROPERTIES="${LAB_RUNTIME_DIR}/sst/auth/auth${AUTH_ID}.properties"
 
 # Stop and status actions
 
@@ -99,7 +99,7 @@ case "${ACTION}" in
     pid="$(auth_pid || true)"
     if [[ -n "${pid}" ]] && kill -0 "${pid}" 2>/dev/null; then
       log_ok "Auth ${AUTH_ID} is running (pid ${pid})"
-      iscps_port_free "${AUTH_TCP_PORT}" \
+      lab_port_free "${AUTH_TCP_PORT}" \
         && log_warn "but nothing is listening on ${AUTH_TCP_PORT}" \
         || log_ok "listening on 127.0.0.1:${AUTH_TCP_PORT}"
       exit 0
@@ -113,12 +113,12 @@ esac
 
 log_step "Starting SST Auth ${AUTH_ID}"
 
-iscps_refuse_login_node
+lab_refuse_login_node
 [[ -f "${JAR}" ]] \
   || die "Auth jar not found. Run: make build-auth"
 [[ -f "${PROPERTIES}" ]] \
   || die "Auth properties not found. Run: make generate"
-[[ -f "${ISCPS_RUNTIME_DIR}/sst/database/auth${AUTH_ID}/auth.db" ]] \
+[[ -f "${LAB_RUNTIME_DIR}/sst/database/auth${AUTH_ID}/auth.db" ]] \
   || die "Auth database not found. Run: make generate"
 [[ -f "${PASSWORD_FILE}" ]] \
   || die "missing ${PASSWORD_FILE}. Run: make generate"
@@ -130,7 +130,7 @@ if [[ -n "${existing}" ]] && kill -0 "${existing}" 2>/dev/null; then
 fi
 rm -f "${PID_FILE}"
 
-if ! iscps_port_free "${AUTH_TCP_PORT}"; then
+if ! lab_port_free "${AUTH_TCP_PORT}"; then
   die "port ${AUTH_TCP_PORT} is already in use. Another Auth may be running.
 This script will not select a process by port. Stop its owner, or change both
 authList[0].tcpPort in sst/configs/warehouse_cart.graph and auth.port in
@@ -154,7 +154,7 @@ log "entity TCP port: ${AUTH_TCP_PORT} (loopback)"
 log "log file:   ${LOG_FILE}"
 
 (
-  cd "${ISCPS_RUNTIME_DIR}/sst/auth"
+  cd "${LAB_RUNTIME_DIR}/sst/auth"
   exec java -jar "${JAR}" -p "${PROPERTIES}" --password "${AUTH_PASSWORD}"
 ) <"${FIFO_FILE}" >>"${LOG_FILE}" 2>&1 &
 
@@ -165,12 +165,12 @@ log "Auth pid ${AUTH_PID} (recorded in ${PID_FILE})"
 # Readiness needs both signals. The command prompt can appear before the entity
 # TCP port is actually bound, so waiting only for the prompt races the first
 # session-key request.
-if ! iscps_wait_for_log "${LOG_FILE}" "Enter command" "${TIMEOUT}" "Auth ${AUTH_ID}"; then
+if ! lab_wait_for_log "${LOG_FILE}" "Enter command" "${TIMEOUT}" "Auth ${AUTH_ID}"; then
   kill -TERM "${AUTH_PID}" 2>/dev/null || true
   rm -f "${PID_FILE}"
   die "Auth did not become ready within ${TIMEOUT}s"
 fi
-if ! iscps_wait_for_port 127.0.0.1 "${AUTH_TCP_PORT}" 30 "Auth ${AUTH_ID} entity service"; then
+if ! lab_wait_for_port 127.0.0.1 "${AUTH_TCP_PORT}" 30 "Auth ${AUTH_ID} entity service"; then
   kill -TERM "${AUTH_PID}" 2>/dev/null || true
   rm -f "${PID_FILE}"
   die "Auth started but never bound port ${AUTH_TCP_PORT}"

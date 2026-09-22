@@ -1,4 +1,4 @@
-# Tooling configuration for the ISCPS SST lab.
+# Tooling configuration for the embodied-agent-auth lab.
 #
 # This project is NOT a pip-installable package; the ROS 2 package under
 # ros2_ws/ is built with colcon, and the scripts run in place. This file exists
@@ -32,7 +32,7 @@ select = [
 ignore = ["E203"]
 
 [tool.ruff.lint.per-file-ignores]
-# STUDENT TEMPLATE ONLY: these files carry ISCPS-STUDENT-TODO scaffolds, so the
+# STUDENT TEMPLATE ONLY: these files carry STUDENT-TODO scaffolds, so the
 # imports they pre-provide are unused until you implement the TODOs.
 "ros2_ws/src/lab/malicious_distance_sensor.py" = ["F401"]
 "ros2_ws/src/lab/malicious_vision.py" = ["F401"]

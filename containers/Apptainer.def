@@ -2,7 +2,7 @@ Bootstrap: docker
 From: ros:jazzy
 
 %labels
-    Description "ROS 2 Jazzy and the SST toolchain for the ISCPS embodied-agent-auth project"
+    Description "ROS 2 Jazzy and the SST toolchain for the embodied-agent-auth project"
 
 %post
     export DEBIAN_FRONTEND=noninteractive

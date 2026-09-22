@@ -243,7 +243,7 @@ class SecureSourceServer(_StatusOwner):
         # STUDENT TODO (Part 4): accept an iotauth SecureServer channel and send
         # only the queued sensor envelopes after its SST handshake succeeds.
         raise NotImplementedError(
-            "ISCPS-STUDENT-TODO(part4-secure-source): "
+            "STUDENT-TODO(part4-secure-source): "
             "accept an iotauth SecureServer channel and send only the queued sensor envelopes "
             "after its SST handshake succeeds. See the STUDENT TODO comment above and "
             "ASSIGNMENT.md."
@@ -321,7 +321,7 @@ class SecureInputClient(_StatusOwner):
         # STUDENT TODO (Part 4): request the authorized group key, connect with
         # SecureClient, and queue plaintext only after the SST handshake.
         raise NotImplementedError(
-            "ISCPS-STUDENT-TODO(part4-secure-input): "
+            "STUDENT-TODO(part4-secure-input): "
             "request the authorized group key, connect with SecureClient, and queue plaintext only "
             "after the SST handshake. See the STUDENT TODO comment above and ASSIGNMENT.md."
         )

@@ -27,4 +27,4 @@ def test_required_model_accepts_image_and_returns_structured_output():
     assert call.decision.action in {"STOP", "PROCEED"}
     assert call.model
     assert call.latency_ms >= 0
-    assert os.environ.get("ISCPS_ALLOW_MOCK") is None
+    assert os.environ.get("LAB_ALLOW_MOCK") is None

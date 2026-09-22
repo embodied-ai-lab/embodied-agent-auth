@@ -4,22 +4,22 @@
 set -euo pipefail
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../scripts" && pwd)/lib.sh"
 
-iscps_refuse_login_node
-GRAPH="${ISCPS_LAB_ROOT}/sst/configs/warehouse_cart.graph"
-WORK="${ISCPS_RUNTIME_DIR}/iotauth-generation"
+lab_refuse_login_node
+GRAPH="${LAB_ROOT}/sst/configs/warehouse_cart.graph"
+WORK="${LAB_RUNTIME_DIR}/iotauth-generation"
 SOURCE="${WORK}/source"
-SST_RUNTIME="${ISCPS_RUNTIME_DIR}/sst"
+SST_RUNTIME="${LAB_RUNTIME_DIR}/sst"
 PASSWORD_FILE="${SST_RUNTIME}/auth_password"
 KEEP_WORK="${KEEP_GENERATION_WORK:-0}"
 
-[[ -f "${ISCPS_IOTAUTH_DIR}/examples/generateAll.sh" ]] \
+[[ -f "${LAB_IOTAUTH_DIR}/examples/generateAll.sh" ]] \
   || die "iotauth submodule is not initialized. Run: make submodules"
 for command in git tar node npm mvn java openssl; do
   need_cmd "${command}"
 done
 
 mkdir -p "${SST_RUNTIME}/logs"
-chmod 700 "${ISCPS_RUNTIME_DIR}" "${SST_RUNTIME}" 2>/dev/null || true
+chmod 700 "${LAB_RUNTIME_DIR}" "${SST_RUNTIME}" 2>/dev/null || true
 if [[ ! -f "${PASSWORD_FILE}" ]]; then
   umask 077
   "${PY}" -c 'import secrets; print(secrets.token_urlsafe(24))' > "${PASSWORD_FILE}"
@@ -36,7 +36,7 @@ cleanup_generation_work() {
 trap cleanup_generation_work EXIT
 
 log_step "Creating disposable generator work tree from the pinned submodule"
-git -C "${ISCPS_IOTAUTH_DIR}" archive HEAD | tar -x -C "${SOURCE}"
+git -C "${LAB_IOTAUTH_DIR}" archive HEAD | tar -x -C "${SOURCE}"
 install -m 0644 "${GRAPH}" "${SOURCE}/examples/configs/warehouse_cart.graph"
 
 GEN_LOG="${SST_RUNTIME}/logs/generate_iotauth.log"
@@ -90,7 +90,7 @@ for old, new in replacements.items():
 Path(sys.argv[2]).write_text(source, encoding="utf-8")
 PY
 
-"${PY}" "${ISCPS_LAB_ROOT}/sst/scripts/write_entity_configs.py" \
+"${PY}" "${LAB_ROOT}/sst/scripts/write_entity_configs.py" \
   --runtime-dir "${SST_RUNTIME}"
 
 log_step "Validating runtime artifacts"

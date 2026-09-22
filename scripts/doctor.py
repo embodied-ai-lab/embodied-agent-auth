@@ -56,7 +56,7 @@ def endpoint_json(url: str, body: dict | None = None) -> dict:
 
 def main() -> int:
     report = Report()
-    print("ISCPS embodied-agent-auth environment doctor")
+    print("embodied-agent-auth environment doctor")
     print(f"host={socket.gethostname()} platform={platform.platform()}")
     report.row(
         "Python 3.10-3.12",

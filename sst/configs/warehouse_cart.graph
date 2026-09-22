@@ -1,6 +1,6 @@
 {
 	"_comment": [
-		"Deployment topology for the ISCPS warehouse-cart crossing project.",
+		"Deployment topology for the embodied-agent-auth warehouse-cart crossing lab.",
 		"Consumed by the upstream iotauth generators in the temporary",
 		"runtime/iotauth-generation work area.",
 		"",

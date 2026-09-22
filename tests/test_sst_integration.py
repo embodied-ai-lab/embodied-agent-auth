@@ -12,8 +12,8 @@ pytestmark = pytest.mark.sst_integration
 
 
 def test_generated_configs_load_through_public_iotauth_api(repo_root):
-    if os.environ.get("ISCPS_RUN_SST_TESTS") != "1":
-        pytest.skip("set ISCPS_RUN_SST_TESTS=1 after make generate")
+    if os.environ.get("LAB_RUN_SST_TESTS") != "1":
+        pytest.skip("set LAB_RUN_SST_TESTS=1 after make generate")
     from iotauth import IoTAuthContext
 
     configs = sorted((repo_root / "runtime/sst/configs").glob("*.config"))
@@ -25,8 +25,8 @@ def test_generated_configs_load_through_public_iotauth_api(repo_root):
 def test_legitimate_distance_and_image_cross_real_secure_channels(
     repo_root, green_image
 ):
-    if os.environ.get("ISCPS_RUN_SST_TESTS") != "1":
-        pytest.skip("set ISCPS_RUN_SST_TESTS=1 after make generate and auth-start")
+    if os.environ.get("LAB_RUN_SST_TESTS") != "1":
+        pytest.skip("set LAB_RUN_SST_TESTS=1 after make generate and auth-start")
 
     from lab.sst_link import (
         SecureInputAuthContext,
