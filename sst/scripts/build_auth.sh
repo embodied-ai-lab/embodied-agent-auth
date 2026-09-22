@@ -46,7 +46,9 @@ log "maven: $(mvn -version 2>&1 | head -1)"
 
 if [[ -f "${JAR}" ]] && (( ! FORCE )); then
   log_ok "Auth jar already built: $(basename "${JAR}")"
-  log "Pass --force to rebuild."
+  log "To rebuild on Sol: lab sst/scripts/build_auth.sh --force"
+  log "On local Linux: sst/scripts/build_auth.sh --force"
+  log "--force is a script option; 'make build-auth' does not forward it."
   exit 0
 fi
 

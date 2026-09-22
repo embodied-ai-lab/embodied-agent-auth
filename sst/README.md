@@ -51,6 +51,11 @@ update all applicable files together and rerun `make generate`.
 On ASU Sol, run project commands through the `lab` wrapper documented in the
 root [`README.md`](../README.md). Personal Linux users can omit that prefix.
 
+In the student template, complete the Part 4 TODOs before running `secure`
+and `secure-attack`, then rerun `lab make build` to install the edited ROS
+code. Building Auth and generating credentials do not complete those TODOs.
+See the root [README's failure guidance](../README.md#expected-failures-before-completing-the-todos).
+
 ```bash
 git submodule update --init third_party/iotauth
 lab make setup
@@ -105,6 +110,9 @@ mechanisms.
   third_party/iotauth`.
 - If the Auth JAR is missing, run `lab make build-auth`. If generated Auth
   properties or entity configs are missing, run `lab make generate`.
+- If the Auth JAR already exists, the build is skipped. Force a rebuild with
+  `lab sst/scripts/build_auth.sh --force` (omit `lab` on local Linux).
+  Passing `--force` to `make build-auth` does not forward it to the script.
 - Auth logs are written to `runtime/sst/logs/auth.log`. The fixed ports are
   `21900`, `22101`, and `22102`.
 - `lab make auth-stop` signals the PID recorded in `runtime/sst/auth.pid`. If

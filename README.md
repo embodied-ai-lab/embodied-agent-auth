@@ -154,6 +154,25 @@ lab make vlm-check
 
 ### 4. Run the experiments
 
+The student template intentionally leaves six functions unfinished. Setup,
+`test-offline`, and the ROS-only baselines can pass before those functions are
+implemented; that does not mean the graded attack and SST modes are ready.
+Complete the relevant work in [ASSIGNMENT.md](ASSIGNMENT.md) in this order:
+
+| Command | Student implementation required first |
+|---|---|
+| `baseline`, `grad-vision-baseline` | None; these use legitimate ROS publishers. |
+| `attack`, `attack-sweep` | Part 1 ROS publisher TODO in `malicious_distance_sensor.py`. |
+| `secure` | Both Part 4 channel TODOs in `sst_link.py`. |
+| `secure-attack` | Both SST channel TODOs plus the Part 4 unregistered-source TODO in `malicious_distance_sensor.py`. |
+| `grad-vision-attack` | Part 5 ROS publisher TODO in `malicious_vision.py`. |
+| `grad-vision-secure` | Both SST channel TODOs plus the Part 5 SST-rejection TODO in `malicious_vision.py`. |
+
+These source files are under `ros2_ws/src/lab/`. After editing them, run
+`lab make build` again: ROS launches the installed copy, so source edits alone
+do not update the running nodes. Get one valid `attack` run before starting
+the 21-trial sweep.
+
 ```bash
 lab make baseline
 lab make attack FALSE_DISTANCE=6.0
@@ -183,6 +202,43 @@ sbatch --export=ALL,RUN_GRAD_EXTENSION=1 slurm/run_experiments.sbatch
 ```
 
 Graph captures still require the interactive procedure.
+
+#### Expected failures before completing the TODOs
+
+Running an unfinished mode can raise
+`NotImplementedError: ISCPS-STUDENT-TODO(...)` in
+`results/<run>/terminal.log`. A crashed publisher or SST worker leaves the
+agent without input, so it selects `STOP` without calling the model. This is
+expected for unfinished template code, but it is an invalid experiment.
+
+- For `attack` and `secure`, `vlm_called: false`, `latency_ms: null`, and
+  `execution_valid: false` mean the required live inference never happened.
+  The evaluator returns `Error 3`.
+- An unfinished distance publisher makes every sweep trial invalid; the table
+  can show zero `VALID` trials, three `ERROR` trials per distance, and
+  `median_latency_ms: n/a`. The sweep returns `Error 1`, even though it writes
+  `trials.csv` and `sweep.png`.
+- A successful `secure-attack` deliberately has `vlm_called: false` and
+  `STOP`, but must also show real connection/rejection evidence, an
+  authenticated legitimate camera, `execution_valid: true`, and
+  `accepted: true`. Missing attack logs, zero connection attempts, and
+  `Error 3` are not successful SST rejection.
+
+After completing the required TODOs and rebuilding, these execution-invalid
+errors are not expected. Check `terminal.log` for the first traceback,
+`vlm_agent.jsonl` for `failure_code`, and `summary.json` for
+`execution_failures`. A schema-valid live ROS-only attack that chooses
+`STOP` is a valid negative result; a run that never called the model is not.
+
+To rebuild an existing Java Auth JAR, use the script directly:
+
+```bash
+lab sst/scripts/build_auth.sh --force
+```
+
+`--force` belongs to this script. `lab make build-auth --force` is handled
+by Make and does not pass the flag to the script. On local Linux, omit `lab`.
+Rebuilding Auth does not implement the student TODOs.
 
 ### 5. Submit before cleaning
 
